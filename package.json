@@ -1,0 +1,13 @@
+{
+  "name": "LevelUp",
+  "description": "Achievements for the web!",
+  "author": "Andy Burke <aburke@bitflood.org>",
+  "version": "0.0.1",
+  "dependencies": {
+    "mongoose": "2.4.x",
+    "mongoose-types": "1.0.x",
+    "sha1": "0.0.x",
+    "express": "2.5.x"
+  },
+  "engine": "node >= 0.4.1"
+}
