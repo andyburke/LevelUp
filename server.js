@@ -17,117 +17,170 @@ var app = express.createServer(
     express.cookieParser()
 );
 
-function checkAPIKey( req, res, next )
+var censoredFields = {
+    'Organization': { 'email': true , 'passwordHash': true, 'apiSecret': true }
+}
+
+function checkOrganizationAuth( request, response, next )
 {
-    var apiKey = req.param( 'apiKey' );
-    models.APIConsumer.findById( apiKey, function( err, apiConsumer ) {
-        if ( err )
+    var apiKey = request.param( 'apiKey' );
+    models.Organization.findById( apiKey, function( error, organization ) {
+        if ( error )
         {
-            res.json( err, 500 );
+            response.json( error.message ? error.message : error, 500 );
             return;
         }
 
-        if ( !apiConsumer )
+        if ( !organization )
         {
-            res.json( 'Could not locate an API consumer account with api key: ' + apiKey, 404 );
+            response.json( 'Could not locate an organization with api key: ' + apiKey, 404 );
             return;
         }
 
-        var apiSecret = req.param
-        if ( apiConsumer.secret != apiSecret )
+        var apiSecret = request.param( 'apiSecret' );
+        var password = request.param( 'password' );
+        if ( !( organization.secret || organization.passwordHash ) || ( apiSecret && organization.secret == apiSecret ) || ( password && organization.passwordHash == sha1( password ) ) )
         {
-            res.json( 'Invalid API secret.', 403 );
+            request.organization = organization;
+            next();
             return;
         }
 
-        req.apiConsumer = apiConsumer;
-        next();
+        response.json( 'Invalid authentication credentials.', 403 );
     });
 }
 
-app.get( '/APIConsumer', checkAPIKey, function( req, res ) {
-    res.json( req.apiConsumer );
-});
-
-app.post( '/APIConsumer', function( req, res ) {
-    var email = req.param( 'email' );
-    var password = req.param( 'password' );
-    var name = req.param( 'name' );
-    var description = req.param( 'description' );
-    var url = req.param( 'url' );
-    
-    var newAPIConsumer = new models.APIConsumer();
-    newAPIConsumer.email = email ? email.toLowerCase() : null;
-    newAPIConsumer.passwordHash = password ? sha1( password ) : null;
-    newAPIConsumer.name = name;
-
-    function saveNewAPIConsumer()
-    {
-        newAPIConsumer.save( function( err ) {
-            if ( err )
-            {
-                res.json( err, 500 );
-                return;
-            }
-
-            res.json( newAPIConsumer );
-        });
-    }
-    
-    if ( newAPIConsumer.email )
-    {
-        models.APIConsumer.findOne( { 'email': email.toLowerCase() }, function( err, apiConsumer ) {
-            if ( apiConsumer )
-            {
-                res.json( 'An API consumer already exists with this email!', 500 );
-                return;
-            }
-            
-            saveNewAPIConsumer();
-        });
-    }
-    else
-    {
-        saveNewAPIConsumer();
-    }
-});
-
-app.get( '/Achievements/:entityIdHash/:contextId?', function( req, res ) {
-    models.Entity.findOne( { 'idHash': req.params.entityIdHash }, function( err, entity ) {
-        if ( err )
+app.get( '/Organization/:organizationId', function( request, response ) {
+    models.Organization.findById( request.params.organizationId, function( error, organization ) {
+        if ( error )
         {
-            res.json( err, 500 );
+            response.json( error.message ? error.message : error, 500 );
+            return;
+        }
+        
+        if ( !organization )
+        {
+            response.json( 'No organization found for the id: ' + request.params.organizationId, 404 );
+            return;
+        }
+        
+        var censoredOrganization = {};
+        for ( var key in organization._doc )
+        {
+            if ( !( key in censoredFields[ 'Organization' ] ) )
+            {
+                censoredOrganization[ key ] = organization[ key ];
+            }
+        }
+
+        response.json( censoredOrganization );
+    });
+});
+
+app.get( '/Organization', checkOrganizationAuth, function( request, response ) {
+    response.json( request.organization );
+});
+
+app.post( '/Organization', function( request, response ) {
+    var email = request.param( 'email' );
+    var password = request.param( 'password' );
+    var name = request.param( 'name' );
+    var description = request.param( 'description' );
+    var url = request.param( 'url' );
+    
+    var newOrganization = new models.Organization();
+    newOrganization.apiSecret = sha1( 'SO SECRET!' + email + password + name + new Date() );
+    newOrganization.email = email ? email.toLowerCase() : '';
+    newOrganization.passwordHash = password ? sha1( password ) : '';
+    newOrganization.name = name ? name : '';
+    newOrganization.description = description ? description : '';
+    newOrganization.url = url ? url : '';
+    
+    newOrganization.save( function( error ) {
+        if ( error )
+        {
+            response.json( error, 500 );
+            return;
+        }
+
+        response.json( newOrganization );
+    });
+});
+
+app.post( '/Context', checkOrganizationAuth, function( request, response ) {
+    
+    var newContext = new models.Context();
+    newContext.organizationId = req.organization.id;
+    newContext.name = request.param( 'name' );
+    newContext.description = request.param( 'description' );
+    newContext.image = request.param( 'image' );
+    newContext.url = request.param( 'url' );
+
+    newContext.save( function( error ) {
+        if ( error )
+        {
+            response.json( error.message ? error.message : error, 500 );
+            return;
+        }
+
+        response.json( newContext );
+    });
+});
+
+app.get( '/Context/:contextId', function( request, response ) {
+    models.Context.findById( request.params.contextId, function( error, context ) {
+        if ( error )
+        {
+            response.json( error.message ? error.message : error, 500 );
+            return;
+        }
+        
+        if ( !context )
+        {
+            response.json( 'No context for for context id: ' + request.params.contextId, 404 );
+            return;
+        }
+        
+        response.json( context );        
+    });
+});
+
+app.get( '/Achievements/:personIdHash/:contextId?', function( request, response ) {
+    models.Entity.findOne( { 'idHash': request.params.entityIdHash }, function( error, entity ) {
+        if ( error )
+        {
+            response.json( error.message ? error.message : error, 500 );
             return;
         }
         
         if ( !entity )
         {
             // Should we send an error instead?
-            res.json( [] );
+            response.json( [] );
             return;
         }
 
         var criteria = { 'entityId': entity.id };
-        if ( req.params.contextId )
+        if ( request.params.contextId )
         {
-            criteria.contextId = req.params.contextId;
+            criteria.contextId = request.params.contextId;
         }
         
-        var stream = models.AchievementEvent.find( criteria ).stream();
+        var stream = models.Achievement.find( criteria ).stream();
 
-        stream.on( 'data', function ( event ) {
+        stream.on( 'data', function ( achievement ) {
             if ( stream.readable )
             {
-                res.write( JSON.stringify( event ) );
+                response.write( JSON.stringify( achievement ) );
             }
         });
         
         stream.on( 'error', function ( streamError ) {
-            res.json( streamError, 500 );
+            response.json( streamError, 500 );
         });
         
         stream.on('close', function () {
-            res.end();
+            response.end();
         });
 
     });

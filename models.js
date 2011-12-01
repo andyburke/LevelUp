@@ -2,21 +2,20 @@ var mongoose = require( 'mongoose' );
 var MongooseTypes = require( 'mongoose-types' );
 MongooseTypes.loadTypes( mongoose );
 var UseTimestamps = MongooseTypes.useTimestamps;
-var Email = mongoose.SchemaTypes.Email;
 
-exports.APIConsumerSchema = new mongoose.Schema({
-    email: { type: Email, index: true },
+exports.OrganizationSchema = new mongoose.Schema({
+    email: { type: String, index: true },
     passwordHash: { type: String },
     apiSecret: { type: String },
     name: { type: String },
     description: { type: String },
     url: { type: String }
 });
-exports.APIConsumerSchema.plugin( UseTimestamps );
-exports.APIConsumer = mongoose.model( 'APIConsumer', exports.APIConsumerSchema );
+exports.OrganizationSchema.plugin( UseTimestamps );
+exports.Organization = mongoose.model( 'Organization', exports.OrganizationSchema );
 
 exports.ContextSchema = new mongoose.Schema({
-    apiConsumerId: { type: mongoose.Schema.ObjectId, index: true },
+    organizationId: { type: mongoose.Schema.ObjectId, index: true },
     name: { type: String },
     description: { type: String },
     image: { type: String },
@@ -25,17 +24,22 @@ exports.ContextSchema = new mongoose.Schema({
 exports.ContextSchema.plugin( UseTimestamps );
 exports.Context = mongoose.model( 'Context', exports.ContextSchema );
 
-exports.EntitySchema = new mongoose.Schema({
-    idHash: { type: String, index: true },
+exports.PersonSchema = new mongoose.Schema({
+    idHash: { type: String, unique: true },
+    email: { type: String, index: true },
+    passwordHash: { type: String },
+    nickname: { type: String, index: true },
+    bio: { type: String },
+    location: { type: String },
     score: { type: Number, default: 0 }
 });
-exports.EntitySchema.plugin( UseTimestamps );
-exports.Entity = mongoose.model( 'Entity', exports.EntitySchema );
+exports.PersonSchema.plugin( UseTimestamps );
+exports.Person = mongoose.model( 'Person', exports.PersonSchema );
 
 exports.XPEventSchema = new mongoose.Schema({
-    apiConsumerId: { type: mongoose.Schema.ObjectId, index: true },
+    organizationId: { type: mongoose.Schema.ObjectId, index: true },
     contextId: { type: mongoose.Schema.ObjectId, index: true },
-    entityId: { type: mongoose.Schema.ObjectId, index: true },
+    personId: { type: mongoose.Schema.ObjectId, index: true },
     eventType: { type: String },
     extra: { type: String },
     xpDelta: { type: Number }
@@ -43,22 +47,22 @@ exports.XPEventSchema = new mongoose.Schema({
 exports.XPEventSchema.plugin( UseTimestamps );
 exports.XPEvent = mongoose.model( 'XPEvent', exports.XPEventSchema );
 
-exports.AchievementSchema = new mongoose.Schema({
-    apiConsumerId: { type: mongoose.Schema.ObjectId, index: true },
+exports.AchievementClassSchema = new mongoose.Schema({
+    organizationId: { type: mongoose.Schema.ObjectId, index: true },
     contextId: { type: mongoose.Schema.ObjectId, index: true },
     name: { type: String },
     description: { type: String },
     image: { type: String },
     points: { type: Number, default: 0 }
 });
-exports.AchievementSchema.plugin( UseTimestamps );
-exports.Achievement = mongoose.model( 'Achievement', exports.AchievementSchema );
+exports.AchievementClassSchema.plugin( UseTimestamps );
+exports.AchievementClass = mongoose.model( 'AchievementClass', exports.AchievementClassSchema );
 
-exports.AchievementEventSchema = new mongoose.Schema({
-    apiConsumerId: { type: mongoose.Schema.ObjectId, index: true },
+exports.AchievementSchema = new mongoose.Schema({
+    organizationId: { type: mongoose.Schema.ObjectId, index: true },
     contextId: { type: mongoose.Schema.ObjectId, index: true },
-    entityId: { type: mongoose.Schema.ObjectId, index: true },
-    achievementId: { type: mongoose.Schema.ObjectId }
+    personId: { type: mongoose.Schema.ObjectId, index: true },
+    achievementClassId: { type: mongoose.Schema.ObjectId }
 });
-exports.AchievementEventSchema.plugin( UseTimestamps );
-exports.AchievementEvent = mongoose.model( 'AchievementEvent', exports.AchievementEventSchema )
+exports.AchievementSchema.plugin( UseTimestamps );
+exports.Achievement = mongoose.model( 'Achievement', exports.AchievementSchema )
