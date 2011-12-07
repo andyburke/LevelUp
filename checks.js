@@ -85,3 +85,34 @@ exports.organizationAuth = function( request, response, next )
         return;
     });
 }
+
+exports.ownsContext = function( request, response, next ) {
+    if ( !request.organization )
+    {
+        response.json( 'Internal server error: organization is not set.', 500 );
+        return;
+    }
+    
+    models.Context.findById( request.params.contextId, function( error, context ) {
+        if ( error )
+        {
+            response.json( error, 500 );
+            return;
+        }
+        
+        if ( !context )
+        {
+            response.json( 'No context for id: ' + request.params.contextId, 404 );
+            return;
+        }
+        
+        if ( !context.organizationId.equals( request.organization._id ) )
+        {
+            response.json( 'You do not own this context.', 403 );
+            return;
+        }
+
+        request.context = context;
+        next();
+    });
+}
