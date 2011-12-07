@@ -9,5 +9,9 @@
     "sha1": "0.0.x",
     "express": "2.5.x"
   },
+  "devDependencies": {
+    "jasmine-node": "1.0.x",
+    "shred": "0.6.x"
+  },
   "engine": "node >= 0.4.1"
 }

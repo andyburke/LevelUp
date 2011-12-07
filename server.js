@@ -1,4 +1,5 @@
 var models = require( './models.js' );
+var checks = require( './checks.js' );
 
 var express = require( 'express' );
 
@@ -19,35 +20,6 @@ var app = express.createServer(
 
 var censoredFields = {
     'Organization': { 'email': true , 'passwordHash': true, 'apiSecret': true }
-}
-
-function checkOrganizationAuth( request, response, next )
-{
-    var apiKey = request.param( 'apiKey' );
-    models.Organization.findById( apiKey, function( error, organization ) {
-        if ( error )
-        {
-            response.json( error.message ? error.message : error, 500 );
-            return;
-        }
-
-        if ( !organization )
-        {
-            response.json( 'Could not locate an organization with api key: ' + apiKey, 404 );
-            return;
-        }
-
-        var apiSecret = request.param( 'apiSecret' );
-        var password = request.param( 'password' );
-        if ( !( organization.secret || organization.passwordHash ) || ( apiSecret && organization.secret == apiSecret ) || ( password && organization.passwordHash == sha1( password ) ) )
-        {
-            request.organization = organization;
-            next();
-            return;
-        }
-
-        response.json( 'Invalid authentication credentials.', 403 );
-    });
 }
 
 app.get( '/Organization/:organizationId', function( request, response ) {
@@ -77,10 +49,6 @@ app.get( '/Organization/:organizationId', function( request, response ) {
     });
 });
 
-app.get( '/Organization', checkOrganizationAuth, function( request, response ) {
-    response.json( request.organization );
-});
-
 app.post( '/Organization', function( request, response ) {
     var email = request.param( 'email' );
     var password = request.param( 'password' );
@@ -96,18 +64,55 @@ app.post( '/Organization', function( request, response ) {
     newOrganization.description = description ? description : '';
     newOrganization.url = url ? url : '';
     
-    newOrganization.save( function( error ) {
+    models.Organization.findOne( { 'email': email }, function( error, organization ) {
         if ( error )
         {
             response.json( error, 500 );
             return;
         }
+        
+        if ( organization )
+        {
+            response.json( { 'error': 'An organization associated with this email address already exists.' }, 409 );
+            return;
+        }
 
-        response.json( newOrganization );
+        newOrganization.save( function( saveError ) {
+            if ( saveError )
+            {
+                response.json( saveError, 500 );
+                return;
+            }
+    
+            response.json( newOrganization );
+        });
     });
 });
 
-app.post( '/Context', checkOrganizationAuth, function( request, response ) {
+app.get( '/Organization', checks.organizationAuth, function( request, response ) {
+    response.json( request.organization );
+});
+
+app.del( '/Organization/:organizationId', checks.organizationAuth, function( request, response ) {
+    if ( !request.isAdmin && request.organization._id != request.params.organizationId )
+    {
+        response.json( 'Unauthorized', 401 );
+        return;
+    }
+    
+    request.organization.remove( function( error ) {
+        if ( error )
+        {
+            response.json( error, 500 );
+            return;
+        }
+        
+        response.json( { 'removed': true } );
+    });
+});
+
+
+app.post( '/Context', checks.organizationAuth, function( request, response ) {
     
     var newContext = new models.Context();
     newContext.organizationId = req.organization.id;
