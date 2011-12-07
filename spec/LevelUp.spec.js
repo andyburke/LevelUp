@@ -1,6 +1,8 @@
 var Shred = require( 'shred' );
 var shred = new Shred();
 
+var debug = true;
+
 var levelUpUrl = process.env[ 'LEVELUP_URL' ] != null ? process.env[ 'LEVELUP_URL' ] : 'http://localhost:8000';
 
 function authString( organizationData )
@@ -27,7 +29,7 @@ describe( 'LevelUp', function() {
     };
 
     it( 'should Create Organization', function () {
-        var error = null;
+        var error = false;
         
         shred.post({
           url: levelUpUrl + '/Organization',
@@ -41,7 +43,13 @@ describe( 'LevelUp', function() {
                 organization = response.content.data;
             },
             error: function( response ) {
-                error = response.content.data;
+                if ( debug )
+                {
+                    console.log( "\nError creating Organization:\n" );
+                    console.log( response.content.body )
+                    console.log( "\n" );
+                }
+                error = true;
             }
           }
         });
@@ -51,7 +59,13 @@ describe( 'LevelUp', function() {
         }, "Create Organization timed out", 10000 );
         
         runs( function () {
-            console.log( JSON.stringify( organization ) );
+            if ( debug )
+            {
+                console.log( "\nCreated organization:\n" );
+                console.log( JSON.stringify( organization, null, 4 ) );
+                console.log( "\n" );
+            }
+
             expect( organization ).not.toBeNull();
             expect( organization.email ).toEqual( organizationData.email );
             expect( organization.passwordHash ).not.toBeUndefined();
@@ -65,7 +79,7 @@ describe( 'LevelUp', function() {
     });
 
     it( 'should Get uncensored Organization', function () {
-        var error = null;
+        var error = false;
         var result = null;
         
         shred.get({
@@ -79,7 +93,13 @@ describe( 'LevelUp', function() {
                 result = response.content.data;
             },
             error: function( response ) {
-                error = response.content.data;
+                if ( debug )
+                {
+                    console.log( "\nError getting uncensored Organization:\n" );
+                    console.log( response.content.body )
+                    console.log( "\n" );
+                }
+                error = true;
             }
           }
         });
@@ -89,7 +109,13 @@ describe( 'LevelUp', function() {
         }, "Get uncensored Organization timed out", 10000 );
         
         runs( function () {
-            console.log( JSON.stringify( result ) );
+            if ( debug )
+            {
+                console.log( "\nGot uncensored organization:\n" );
+                console.log( JSON.stringify( result, null, 4 ) );
+                console.log( "\n" );
+            }
+
             expect( result ).not.toBeNull();
             expect( result.email ).toEqual( organizationData.email );
             expect( result.passwordHash ).not.toBeUndefined();
@@ -103,7 +129,7 @@ describe( 'LevelUp', function() {
     });
 
     it( 'should Get censored Organization', function () {
-        var error = null;
+        var error = false;
         var result = null;
         
         shred.get({
@@ -116,7 +142,13 @@ describe( 'LevelUp', function() {
                 result = response.content.data;
             },
             error: function( response ) {
-                error = response.content.data;
+                if ( debug )
+                {
+                    console.log( "\nError getting censored Organization:\n" );
+                    console.log( response.content.body )
+                    console.log( "\n" );
+                }
+                error = true;
             }
           }
         });
@@ -126,21 +158,27 @@ describe( 'LevelUp', function() {
         }, "Get censored Organization timed out", 10000 );
         
         runs( function () {
-            console.log( JSON.stringify( result ) );
+            if ( debug )
+            {
+                console.log( "\nGot censored organization:\n" );
+                console.log( JSON.stringify( result, null, 4 ) );
+                console.log( "\n" );
+            }
+
             expect( result ).not.toBeNull();
             expect( result.email ).toBeUndefined();
             expect( result.passwordHash ).toBeUndefined();
             expect( result.apiSecret ).toBeUndefined();
-            expect( result.name ).toEqual( organizationData.name );
-            expect( result.description ).toEqual( organizationData.description );
-            expect( result.url ).toEqual( organizationData.url );
-            expect( result._id ).not.toBeUndefined();
-            expect( result.updatedAt ).not.toBeUndefined();
+            expect( result.name ).toEqual( organization.name );
+            expect( result.description ).toEqual( organization.description );
+            expect( result.url ).toEqual( organization.url );
+            expect( result._id ).toEqual( organization._id );
+            expect( result.updatedAt ).toEqual( organization.updatedAt );
         });
     });    
 
     it( 'should Update Organization', function () {
-        var error = null;
+        var error = false;
         var updatedOrganization = null;
         
         shred.put({
@@ -156,7 +194,13 @@ describe( 'LevelUp', function() {
                 updatedOrganization = response.content.data;
             },
             error: function( response ) {
-                error = response.content.data;
+                if ( debug )
+                {
+                    console.log( "\nError updating Organization:\n" );
+                    console.log( response.content.body )
+                    console.log( "\n" );
+                }
+                error = true;
             }
           }
         });
@@ -166,7 +210,13 @@ describe( 'LevelUp', function() {
         }, "Update Organization timed out", 10000 );
         
         runs( function () {
-            console.log( JSON.stringify( updatedOrganization ) );
+            if ( debug )
+            {
+                console.log( "\nGot updated organization:\n" );
+                console.log( JSON.stringify( updatedOrganization, null, 4 ) );
+                console.log( "\n" );
+            }
+
             expect( updatedOrganization ).not.toBeNull();
             expect( updatedOrganization.email ).toEqual( updatedOrganizationData.email );
             expect( updatedOrganization.passwordHash ).not.toBeUndefined();
@@ -192,7 +242,7 @@ describe( 'LevelUp', function() {
     
     it( 'should Delete Organization', function () {
         var result = null;        
-        var error = null;
+        var error = false;
         
         shred.delete({
           url: levelUpUrl + '/Organization/' + organization._id,
@@ -205,8 +255,13 @@ describe( 'LevelUp', function() {
                 result = response.content.data;
             },
             error: function( response ) {
-                error = response.content.body;
-                console.log( error );
+                if ( debug )
+                {
+                    console.log( "\nError deleting Organization:\n" );
+                    console.log( response.content.body )
+                    console.log( "\n" );
+                }
+                error = true;
             }
           }
         });
@@ -216,6 +271,13 @@ describe( 'LevelUp', function() {
         }, "Delete Organization timed out", 10000 );
         
         runs( function () {
+            if ( debug )
+            {
+                console.log( "\nGot delete Organization result:\n" );
+                console.log( JSON.stringify( result, null, 4 ) );
+                console.log( "\n" );
+            }
+            
             expect( result ).not.toBeNull();
         });
     });
