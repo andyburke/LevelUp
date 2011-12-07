@@ -44,7 +44,6 @@ exports.organizationAuth = function( request, response, next )
     var authorization = request.headers.authorization;
     if ( !authorization )
     {
-        response.setHeader('WWW-Authenticate', 'Basic realm="' + realm + '"');
         response.send( 'Unauthorized', 401 );
         return;
     }
@@ -66,6 +65,12 @@ exports.organizationAuth = function( request, response, next )
         if ( error )
         {
             response.json( error, 500 );
+            return;
+        }
+        
+        if ( !organization )
+        {
+            response.send( 'Could not locate an organization based on the provided credentials.', 404 );
             return;
         }
         

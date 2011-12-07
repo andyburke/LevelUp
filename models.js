@@ -3,6 +3,8 @@ var MongooseTypes = require( 'mongoose-types' );
 MongooseTypes.loadTypes( mongoose );
 var UseTimestamps = MongooseTypes.useTimestamps;
 
+var sha1 = require( 'sha1' );
+
 exports.OrganizationSchema = new mongoose.Schema({
     email: { type: String, index: true },
     passwordHash: { type: String },
@@ -13,6 +15,9 @@ exports.OrganizationSchema = new mongoose.Schema({
 });
 exports.OrganizationSchema.plugin( UseTimestamps );
 exports.Organization = mongoose.model( 'Organization', exports.OrganizationSchema );
+exports.Organization.prototype.updateApiSecret = function() {
+    this.apiSecret = sha1( 'SO SECRET!' + this.email + this.passwordHash + this.name + new Date() );      
+};
 
 exports.ContextSchema = new mongoose.Schema({
     organizationId: { type: mongoose.Schema.ObjectId, index: true },
