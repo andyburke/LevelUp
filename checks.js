@@ -116,3 +116,34 @@ exports.ownsContext = function( request, response, next ) {
         next();
     });
 }
+
+exports.ownsAchievementClass = function( request, response, next ) {
+    if ( !request.organization )
+    {
+        response.json( 'Internal server error: organization is not set.', 500 );
+        return;
+    }
+    
+    models.AchievementClass.findById( request.params.achievementClassId, function( error, achievementClass ) {
+        if ( error )
+        {
+            response.json( error, 500 );
+            return;
+        }
+        
+        if ( !achievementClass )
+        {
+            response.json( 'No achievement class for id: ' + request.params.achievementClassId, 404 );
+            return;
+        }
+        
+        if ( !achievementClass.organizationId.equals( request.organization._id ) )
+        {
+            response.json( 'You do not own this context.', 403 );
+            return;
+        }
+
+        request.achievementClass = achievementClass;
+        next();
+    });
+}

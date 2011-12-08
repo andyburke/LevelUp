@@ -2,46 +2,8 @@ var models = require( './models.js' );
 var checks = require( './checks.js' );
 
 exports.bindToApp = function( app ) {
-    /*
-    app.post( '/AchivementClass', checks.organizationAuth, function( request, response ) {
-        
-        var newContext = new models.Context();
-        newContext.organizationId = request.organization._id;
-        newContext.name = request.param( 'name' );
-        newContext.description = request.param( 'description' );
-        newContext.image = request.param( 'image' );
-        newContext.url = request.param( 'url' );
-    
-        newContext.save( function( error ) {
-            if ( error )
-            {
-                response.json( error.message ? error.message : error, 500 );
-                return;
-            }
-    
-            response.json( newContext );
-        });
-    });
-    
-    app.put( '/Context/:contextId', checks.organizationAuth, checks.ownsContext, function( request, response ) {
-        request.context.name = request.param( 'name' ) ? request.param( 'name' ) : request.context.name;
-        request.context.description = request.param( 'description' ) ? request.param( 'description' ) : request.context.description;
-        request.context.image = request.param( 'image' ) ? request.param( 'image' ) : request.context.image;
-        request.context.url = request.param( 'url' ) ? request.param( 'url' ) : request.context.url;
-    
-        request.context.save( function( error ) {
-            if ( error )
-            {
-                response.json( error, 500 );
-                return;
-            }
-            
-            response.json( request.context );
-        });
-    });
-    
-    app.get( '/Context/:contextId', function( request, response ) {
-        models.Context.findById( request.params.contextId, function( error, context ) {
+    app.post( '/AchievementClass', checks.organizationAuth, function( request, response ) {
+        models.Context.findById( request.param( 'contextId' ), function( error, context ) {
             if ( error )
             {
                 response.json( error, 500 );
@@ -50,16 +12,73 @@ exports.bindToApp = function( app ) {
             
             if ( !context )
             {
-                response.json( 'No context for for context id: ' + request.params.contextId, 404 );
+                response.json( 'Could not locate a context with id: ' + request.param( 'contextId' ), 404 );
                 return;
             }
             
-            response.json( context );        
+            if ( !context.organizationId.equals( request.organization._id ) )
+            {
+                response.json( 'Your organization does not own this context.', 403 );
+                return;
+            }
+            
+            var newAchievementClass = new models.AchievementClass();
+            newAchievementClass.organizationId = request.organization._id;
+            newAchievementClass.contextId = context._id;
+            newAchievementClass.name = request.param( 'name' );
+            newAchievementClass.description = request.param( 'description' );
+            newAchievementClass.image = request.param( 'image' );
+            newAchievementClass.points = request.param( 'points' ) != null ? request.param( 'points' ) : 0;
+        
+            newAchievementClass.save( function( saveError ) {
+                if ( saveError )
+                {
+                    response.json( saveError, 500 );
+                    return;
+                }
+        
+                response.json( newAchievementClass );
+            });
         });
     });
     
-    app.del( '/Context/:contextId', checks.organizationAuth, checks.ownsContext, function( request, response ) {
-        request.context.remove( function( error ) {
+    app.put( '/AchievementClass/:achievementClassId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
+        request.achievementClass.name = request.param( 'name' ) ? request.param( 'name' ) : request.achievementClass.name;
+        request.achievementClass.description = request.param( 'description' ) ? request.param( 'description' ) : request.achievementClass.description;
+        request.achievementClass.image = request.param( 'image' ) ? request.param( 'image' ) : request.achievementClass.image;
+        request.achievementClass.points = request.param( 'points' ) != null ? request.param( 'points' ) : request.achievementClass.points;
+    
+        request.achievementClass.save( function( error ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            response.json( request.achievementClass );
+        });
+    });
+    
+    app.get( '/AchievementClass/:achievementClassId', function( request, response ) {
+        models.AchievementClass.findById( request.params.achievementClassId, function( error, achievementClass ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            if ( !achievementClass )
+            {
+                response.json( 'No achievement class with id: ' + request.params.achievementClassId, 404 );
+                return;
+            }
+            
+            response.json( achievementClass );        
+        });
+    });
+    
+    app.del( '/AchievementClass/:achievementClassId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
+        request.achievementClass.remove( function( error ) {
             if ( error )
             {
                 response.json( error, 500 );
@@ -70,35 +89,15 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/Contexts/:organizationId', function( request, response ) {
-        models.Context.find( { 'organizationId': request.params.organizationId }, function( error, contexts ) {
+    app.get( '/AchievementClasses/:contextId', function( request, response ) {
+        models.AchievementClass.find( { 'contextId': request.params.contextId }, function( error, achievementClasses ) {
             if ( error )
             {
                 response.json( error, 500 );
                 return;
             }
             
-            response.json( contexts );
+            response.json( achievementClasses );
         });
     });
-    
-    app.get( '/ContextStream/:organizationId', function( request, response ) {
-        var stream = models.Context.find( { 'organizationId': request.params.organizationId } ).stream();
-    
-        stream.on( 'data', function ( context ) {
-            if ( stream.readable )
-            {
-                response.write( JSON.stringify( context ) );
-            }
-        });
-        
-        stream.on( 'error', function ( streamError ) {
-            response.json( streamError, 500 );
-        });
-        
-        stream.on( 'close', function () {
-            response.end();
-        });
-    });
-    */
 }

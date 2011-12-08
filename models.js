@@ -41,17 +41,6 @@ exports.PersonSchema = new mongoose.Schema({
 exports.PersonSchema.plugin( UseTimestamps );
 exports.Person = mongoose.model( 'Person', exports.PersonSchema );
 
-exports.XPEventSchema = new mongoose.Schema({
-    organizationId: { type: mongoose.Schema.ObjectId, index: true },
-    contextId: { type: mongoose.Schema.ObjectId, index: true },
-    personId: { type: mongoose.Schema.ObjectId, index: true },
-    eventType: { type: String },
-    extra: { type: String },
-    xpDelta: { type: Number }
-});
-exports.XPEventSchema.plugin( UseTimestamps );
-exports.XPEvent = mongoose.model( 'XPEvent', exports.XPEventSchema );
-
 exports.AchievementClassSchema = new mongoose.Schema({
     organizationId: { type: mongoose.Schema.ObjectId, index: true },
     contextId: { type: mongoose.Schema.ObjectId, index: true },
@@ -71,3 +60,15 @@ exports.AchievementSchema = new mongoose.Schema({
 });
 exports.AchievementSchema.plugin( UseTimestamps );
 exports.Achievement = mongoose.model( 'Achievement', exports.AchievementSchema )
+
+exports.XPEventSchema = new mongoose.Schema({
+    organizationId: { type: mongoose.Schema.ObjectId, index: true },
+    contextId: { type: mongoose.Schema.ObjectId, index: true },
+    personId: { type: mongoose.Schema.ObjectId, index: true },
+    eventType: { type: String },
+    extra: { type: String },
+    xpDelta: { type: Number }
+});
+exports.XPEventSchema.plugin( UseTimestamps );
+exports.XPEvent = mongoose.model( 'XPEvent', exports.XPEventSchema );
+
