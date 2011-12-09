@@ -29,18 +29,6 @@ exports.ContextSchema = new mongoose.Schema({
 exports.ContextSchema.plugin( UseTimestamps );
 exports.Context = mongoose.model( 'Context', exports.ContextSchema );
 
-exports.PersonSchema = new mongoose.Schema({
-    idHash: { type: String, unique: true },
-    email: { type: String, index: true },
-    passwordHash: { type: String },
-    nickname: { type: String, index: true },
-    bio: { type: String },
-    location: { type: String },
-    score: { type: Number, default: 0 }
-});
-exports.PersonSchema.plugin( UseTimestamps );
-exports.Person = mongoose.model( 'Person', exports.PersonSchema );
-
 exports.AchievementClassSchema = new mongoose.Schema({
     organizationId: { type: mongoose.Schema.ObjectId, index: true },
     contextId: { type: mongoose.Schema.ObjectId, index: true },
@@ -53,22 +41,23 @@ exports.AchievementClassSchema.plugin( UseTimestamps );
 exports.AchievementClass = mongoose.model( 'AchievementClass', exports.AchievementClassSchema );
 
 exports.AchievementSchema = new mongoose.Schema({
+    personHash: { type: String, index: true },
     organizationId: { type: mongoose.Schema.ObjectId, index: true },
     contextId: { type: mongoose.Schema.ObjectId, index: true },
-    personId: { type: mongoose.Schema.ObjectId, index: true },
-    achievementClassId: { type: mongoose.Schema.ObjectId }
+    classId: { type: mongoose.Schema.ObjectId }
 });
 exports.AchievementSchema.plugin( UseTimestamps );
 exports.Achievement = mongoose.model( 'Achievement', exports.AchievementSchema )
 
-exports.XPEventSchema = new mongoose.Schema({
-    organizationId: { type: mongoose.Schema.ObjectId, index: true },
-    contextId: { type: mongoose.Schema.ObjectId, index: true },
-    personId: { type: mongoose.Schema.ObjectId, index: true },
-    eventType: { type: String },
-    extra: { type: String },
-    xpDelta: { type: Number }
+exports.PersonSchema = new mongoose.Schema({
+    hash: { type: String, unique: true },
+    email: { type: String, index: true },
+    passwordHash: { type: String },
+    nickname: { type: String, index: true },
+    bio: { type: String },
+    location: { type: String },
+    score: { type: Number, default: 0 }
 });
-exports.XPEventSchema.plugin( UseTimestamps );
-exports.XPEvent = mongoose.model( 'XPEvent', exports.XPEventSchema );
+exports.PersonSchema.plugin( UseTimestamps );
+exports.Person = mongoose.model( 'Person', exports.PersonSchema );
 

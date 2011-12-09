@@ -660,6 +660,335 @@ describe( 'AchievementClasses', function() {
     });
 });
 
+var achievement = null;
+var achievementByContextName = null;
+var achievementByClassName = null;
+
+describe( 'Achievements', function() {
+
+    var deletedAchievement = false;
+    var deletedAchievementByContextName = false;
+    var deletedAchievementByClassName = false;
+
+    waitsFor( function() {
+        return achievementClass; 
+    }, 'Achievement Class creation took too long.', 30000 );
+
+    it( 'should Create Achievement', function () {
+        var error = false;
+        
+        shred.post({
+          url: utils.levelUpUrl + '/Achievement',
+          headers: {
+            content_type: 'application/json',
+            accept: 'application/json',
+            authorization: utils.authString( updatedOrganizationData )
+          },
+          content: {
+            personHash: utils.personHash(),
+            contextId: context._id,
+            classId: achievementClass._id
+          },
+          on: {
+            response: function( response ) {
+                achievement = response.content.data;
+            },
+            error: function( response ) {
+                if ( utils.debug )
+                {
+                    console.log( "\nError creating Achievement:\n" );
+                    console.log( response.content.body )
+                    console.log( "\n" );
+                }
+                error = true;
+            }
+          }
+        });
+        
+        waitsFor( function() {
+            return error || achievement;
+        }, "Create Achievement timed out", 10000 );
+        
+        runs( function () {
+            if ( utils.debug )
+            {
+                console.log( "\nCreated Achievement:\n" );
+                console.log( JSON.stringify( achievement, null, 4 ) );
+                console.log( "\n" );
+            }
+
+            expect( achievement ).not.toBeNull();
+            expect( achievement._id ).not.toBeUndefined();
+            expect( achievement.contextId ).toEqual( context._id );
+            expect( achievement.organizationId ).toEqual( organization._id );
+            expect( achievement.classId ).toEqual( achievementClass._id );
+            expect( achievement.updatedAt ).not.toBeUndefined();
+        });
+    });        
+
+    it( 'should Delete Achievement', function () {
+        var error = false;
+        var result = null;
+        
+        waitsFor( function() {
+            return achievement; 
+        }, 'Achievement creation took too long.', 30000 );
+
+        runs( function() {
+            shred.delete({
+              url: utils.levelUpUrl + '/Achievement/' + achievement._id,
+              headers: {
+                accept: 'application/json',
+                authorization: utils.authString( updatedOrganizationData )
+              },
+              on: {
+                response: function( response ) {
+                    result = response.content.data;
+                    deletedAchievement = true;
+                },
+                error: function( response ) {
+                    if ( utils.debug )
+                    {
+                        console.log( "\nError deleting Achievement:\n" );
+                        console.log( response.content.body )
+                        console.log( "\n" );
+                    }
+                    error = true;
+                }
+              }
+            });
+        });
+        
+        waitsFor( function() {
+            return error || result;
+        }, "Delete Achievement timed out", 10000 );
+        
+        runs( function () {
+            if ( utils.debug )
+            {
+                console.log( "\nDeleted Achievement:\n" );
+                console.log( JSON.stringify( result, null, 4 ) );
+                console.log( "\n" );
+            }
+
+            expect( result ).not.toBeNull();
+        });
+    });        
+
+    it( 'should Create Achievement using context name', function () {
+        var error = false;
+        
+        waitsFor( function () {
+            return deletedAchievement;            
+        }, 'Creating/Deleting achievement timed out', 30000 );
+        
+        runs( function() {
+            shred.post({
+              url: utils.levelUpUrl + '/Achievement',
+              headers: {
+                content_type: 'application/json',
+                accept: 'application/json',
+                authorization: utils.authString( updatedOrganizationData )
+              },
+              content: {
+                personHash: utils.personHash(),
+                context: context.name,
+                classId: achievementClass._id
+              },
+              on: {
+                response: function( response ) {
+                    achievementByContextName = response.content.data;
+                },
+                error: function( response ) {
+                    if ( utils.debug )
+                    {
+                        console.log( "\nError creating Achievement by context name:\n" );
+                        console.log( response.content.body )
+                        console.log( "\n" );
+                    }
+                    error = true;
+                }
+              }
+            });
+        });
+        
+        waitsFor( function() {
+            return error || achievementByContextName;
+        }, "Create Achievement by context name timed out", 10000 );
+        
+        runs( function () {
+            if ( utils.debug )
+            {
+                console.log( "\nCreated Achievement using context name:\n" );
+                console.log( JSON.stringify( achievementByContextName, null, 4 ) );
+                console.log( "\n" );
+            }
+
+            expect( achievementByContextName ).not.toBeNull();
+            expect( achievementByContextName._id ).not.toBeUndefined();
+            expect( achievementByContextName.contextId ).toEqual( context._id );
+            expect( achievementByContextName.organizationId ).toEqual( organization._id );
+            expect( achievementByContextName.classId ).toEqual( achievementClass._id );
+            expect( achievementByContextName.updatedAt ).not.toBeUndefined();
+        });
+    });
+    
+    it( 'should Delete Achievement by context name', function () {
+        var error = false;
+        var result = null;
+        
+        waitsFor( function() {
+            return achievementByContextName; 
+        }, 'Achievement by context name creation took too long.', 30000 );
+
+        runs( function() {
+            shred.delete({
+              url: utils.levelUpUrl + '/Achievement/' + achievementByContextName._id,
+              headers: {
+                accept: 'application/json',
+                authorization: utils.authString( updatedOrganizationData )
+              },
+              on: {
+                response: function( response ) {
+                    result = response.content.data;
+                    deletedAchievementByContextName = true;
+                },
+                error: function( response ) {
+                    if ( utils.debug )
+                    {
+                        console.log( "\nError deleting Achievement by context name:\n" );
+                        console.log( response.content.body )
+                        console.log( "\n" );
+                    }
+                    error = true;
+                }
+              }
+            });
+        });
+        
+        waitsFor( function() {
+            return error || result;
+        }, "Delete Achievement by context name timed out", 10000 );
+        
+        runs( function () {
+            if ( utils.debug )
+            {
+                console.log( "\nDeleted Achievement by context name:\n" );
+                console.log( JSON.stringify( result, null, 4 ) );
+                console.log( "\n" );
+            }
+
+            expect( result ).not.toBeNull();
+        });
+    });
+
+    it( 'should Create Achievement using class name', function () {
+        var error = false;
+        
+        waitsFor( function () {
+            return deletedAchievementByContextName;            
+        }, 'Creating/Deleting achievement by context name timed out', 30000 );
+        
+        runs( function() {
+            shred.post({
+              url: utils.levelUpUrl + '/Achievement',
+              headers: {
+                content_type: 'application/json',
+                accept: 'application/json',
+                authorization: utils.authString( updatedOrganizationData )
+              },
+              content: {
+                personHash: utils.personHash(),
+                contextId: context._id,
+                class: achievementClass.name
+              },
+              on: {
+                response: function( response ) {
+                    achievementByClassName = response.content.data;
+                },
+                error: function( response ) {
+                    if ( utils.debug )
+                    {
+                        console.log( "\nError creating Achievement by class name:\n" );
+                        console.log( response.content.body )
+                        console.log( "\n" );
+                    }
+                    error = true;
+                }
+              }
+            });
+        });
+        
+        waitsFor( function() {
+            return error || achievementByClassName;
+        }, "Create Achievement by class name timed out", 10000 );
+        
+        runs( function () {
+            if ( utils.debug )
+            {
+                console.log( "\nCreated Achievement using class name:\n" );
+                console.log( JSON.stringify( achievementByClassName, null, 4 ) );
+                console.log( "\n" );
+            }
+
+            expect( achievementByClassName ).not.toBeNull();
+            expect( achievementByClassName._id ).not.toBeUndefined();
+            expect( achievementByClassName.contextId ).toEqual( context._id );
+            expect( achievementByClassName.organizationId ).toEqual( organization._id );
+            expect( achievementByClassName.classId ).toEqual( achievementClass._id );
+            expect( achievementByClassName.updatedAt ).not.toBeUndefined();
+        });
+    });
+    
+    it( 'should Delete Achievement by class name', function () {
+        var error = false;
+        var result = null;
+        
+        waitsFor( function() {
+            return achievementByClassName; 
+        }, 'Achievement by class name creation took too long.', 30000 );
+
+        runs( function() {
+            shred.delete({
+              url: utils.levelUpUrl + '/Achievement/' + achievementByClassName._id,
+              headers: {
+                accept: 'application/json',
+                authorization: utils.authString( updatedOrganizationData )
+              },
+              on: {
+                response: function( response ) {
+                    result = response.content.data;
+                    deletedAchievementByClassName = true;
+                },
+                error: function( response ) {
+                    if ( utils.debug )
+                    {
+                        console.log( "\nError deleting Achievement by class name:\n" );
+                        console.log( response.content.body )
+                        console.log( "\n" );
+                    }
+                    error = true;
+                }
+              }
+            });
+        });
+        
+        waitsFor( function() {
+            return error || result;
+        }, "Delete Achievement by class name timed out", 10000 );
+        
+        runs( function () {
+            if ( utils.debug )
+            {
+                console.log( "\nDeleted Achievement by class name:\n" );
+                console.log( JSON.stringify( result, null, 4 ) );
+                console.log( "\n" );
+            }
+
+            expect( result ).not.toBeNull();
+        });
+    });
+});
 
 describe( 'Cleanup', function() {
 

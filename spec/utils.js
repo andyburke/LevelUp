@@ -1,3 +1,5 @@
+var md5 = require( 'MD5' );
+
 exports.debug = true;
 
 exports.levelUpUrl = process.env[ 'LEVELUP_URL' ] != null ? process.env[ 'LEVELUP_URL' ] : 'http://localhost:8000';
@@ -37,4 +39,9 @@ exports.getAchievementClassData = function( achievementClassName, context )
         image: 'http://blah.com/' + achievementClassName + '.png',
         points: 10
     };
+}
+
+exports.personHash = function()
+{
+    return md5( 'test@test.com' );
 }

@@ -42,7 +42,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.put( '/AchievementClass/:achievementClassId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
+    app.put( '/AchievementClass/:classId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
         request.achievementClass.name = request.param( 'name' ) ? request.param( 'name' ) : request.achievementClass.name;
         request.achievementClass.description = request.param( 'description' ) ? request.param( 'description' ) : request.achievementClass.description;
         request.achievementClass.image = request.param( 'image' ) ? request.param( 'image' ) : request.achievementClass.image;
@@ -59,8 +59,8 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/AchievementClass/:achievementClassId', function( request, response ) {
-        models.AchievementClass.findById( request.params.achievementClassId, function( error, achievementClass ) {
+    app.get( '/AchievementClass/:classId', function( request, response ) {
+        models.AchievementClass.findById( request.params.classId, function( error, achievementClass ) {
             if ( error )
             {
                 response.json( error, 500 );
@@ -69,7 +69,7 @@ exports.bindToApp = function( app ) {
             
             if ( !achievementClass )
             {
-                response.json( 'No achievement class with id: ' + request.params.achievementClassId, 404 );
+                response.json( 'No achievement class with id: ' + request.params.classId, 404 );
                 return;
             }
             
@@ -77,7 +77,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/AchievementClass/:achievementClassId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
+    app.del( '/AchievementClass/:classId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
         request.achievementClass.remove( function( error ) {
             if ( error )
             {

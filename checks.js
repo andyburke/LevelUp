@@ -124,7 +124,7 @@ exports.ownsAchievementClass = function( request, response, next ) {
         return;
     }
     
-    models.AchievementClass.findById( request.params.achievementClassId, function( error, achievementClass ) {
+    models.AchievementClass.findById( request.params.classId, function( error, achievementClass ) {
         if ( error )
         {
             response.json( error, 500 );
@@ -133,7 +133,7 @@ exports.ownsAchievementClass = function( request, response, next ) {
         
         if ( !achievementClass )
         {
-            response.json( 'No achievement class for id: ' + request.params.achievementClassId, 404 );
+            response.json( 'No achievement class for id: ' + request.params.classId, 404 );
             return;
         }
         

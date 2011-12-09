@@ -87,7 +87,7 @@ exports.bindToApp = function( app ) {
         stream.on( 'data', function ( context ) {
             if ( stream.readable )
             {
-                response.write( JSON.stringify( context ) );
+                response.write( JSON.stringify( context ) + "\r" );
             }
         });
         
