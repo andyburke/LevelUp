@@ -666,6 +666,7 @@ var achievementByClassName = null;
 
 describe( 'Achievements', function() {
 
+    var checkedAchievementList = false;
     var deletedAchievement = false;
     var deletedAchievementByContextName = false;
     var deletedAchievementByClassName = false;
@@ -724,6 +725,59 @@ describe( 'Achievements', function() {
             expect( achievement.classId ).toEqual( achievementClass._id );
             expect( achievement.updatedAt ).not.toBeUndefined();
         });
+    });
+
+    it( 'should Get Achievement list', function () {
+        var error = false;
+        var result = null;
+        
+        waitsFor( function() {
+            return achievement; 
+        }, 'Achievement creation took too long.', 30000 );
+
+        runs( function() {
+            shred.get({
+              url: utils.levelUpUrl + '/Achievements/' + utils.personHash(),
+              headers: {
+                accept: 'application/json'
+              },
+              on: {
+                response: function( response ) {
+                    result = response.content.data;
+                },
+                error: function( response ) {
+                    if ( utils.debug )
+                    {
+                        console.log( "\nError getting Achievement list:\n" );
+                        console.log( response.content.body )
+                        console.log( "\n" );
+                    }
+                    error = true;
+                }
+              }
+            });
+        });
+        
+        waitsFor( function() {
+            return error || result;
+        }, "Get Achievement list timed out", 10000 );
+        
+        runs( function () {
+            if ( utils.debug )
+            {
+                console.log( "\nGot Achievement list:\n" );
+                console.log( JSON.stringify( result, null, 4 ) );
+                console.log( "\n" );
+            }
+
+            expect( result ).not.toBeNull();
+            expect( result.length ).toEqual( 1 );
+            expect( result[ 0 ].classId ).toEqual( achievement.classId );
+            expect( result[ 0 ].organizationId ).toEqual( achievement.organizationId );
+            expect( result[ 0 ].contextId ).toEqual( achievement.contextId );
+
+            checkedAchievementList = true;
+        });
     });        
 
     it( 'should Delete Achievement', function () {
@@ -731,8 +785,8 @@ describe( 'Achievements', function() {
         var result = null;
         
         waitsFor( function() {
-            return achievement; 
-        }, 'Achievement creation took too long.', 30000 );
+            return checkedAchievementList; 
+        }, 'Achievement gathering took too long.', 30000 );
 
         runs( function() {
             shred.delete({

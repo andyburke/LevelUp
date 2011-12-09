@@ -113,7 +113,7 @@ exports.bindToApp = function( app ) {
             criteria.contextId = request.params.contextId;
         }
         
-        models.Achievement.find( criteria, function( error, acheivements ) {
+        models.Achievement.find( criteria, function( error, achievements ) {
             if ( error )
             {
                 response.json( error, 500 );
