@@ -1,6 +1,3 @@
-var models = require( './models.js' );
-var checks = require( './checks.js' );
-
 var express = require( 'express' );
 
 var dbHost = process.env[ 'MONGO_HOST' ] != null ? process.env[ 'MONGO_HOST' ] : 'localhost';
@@ -11,21 +8,21 @@ var mongoose = require( 'mongoose' );
 mongoose.connect( dbHost, dbName, dbPort );
 
 var app = express.createServer(
-    express.static(__dirname + '/public'),  
+    express.static( __dirname + '/static' ),
     express.bodyParser(),
     express.cookieParser()
 );
 
-var contexts = require( './Contexts.js' );
+var contexts = require( './api/Contexts.js' );
 contexts.bindToApp( app );
 
-var organizations = require( './Organizations.js' );
+var organizations = require( './api/Organizations.js' );
 organizations.bindToApp( app );
 
-var achievementClasses = require( './AchievementClasses.js' );
+var achievementClasses = require( './api/AchievementClasses.js' );
 achievementClasses.bindToApp( app );
 
-var achievements = require( './Achievements.js' );
+var achievements = require( './api/Achievements.js' );
 achievements.bindToApp( app );
 
 app.listen( process.env.PORT || 8000 );
