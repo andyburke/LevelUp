@@ -8,7 +8,7 @@ var mongoose = require( 'mongoose' );
 mongoose.connect( dbHost, dbName, dbPort );
 
 var app = express.createServer(
-    express.static( __dirname + '/static' ),
+    express.static( __dirname + '/site' ),
     express.bodyParser(),
     express.cookieParser()
 );
