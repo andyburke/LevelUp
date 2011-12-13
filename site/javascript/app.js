@@ -35,6 +35,11 @@ function SetActivePage( page )
         renderTemplate( '#main', "/templates/home.mustache", null );
     });
 
+    this.get('#/API', function() {
+        SetActivePage( 'api' );
+        renderTemplate( '#main', "/templates/api.mustache", null );
+    });
+
     this.get('#/SignUp/User', function() {
         SetActivePage( 'signup' );
         renderTemplate( '#main', "/templates/user.signup.mustache", null );

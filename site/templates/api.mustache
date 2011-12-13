@@ -1,0 +1,159 @@
+<div class="page-header">
+    <h1>LevelUp.io API</h1>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h2>Organizations</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h3>URL: /Organization</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h4>POST <small>Creates a new organization.</small></h4>
+        <table class="zebra-striped">
+            <tr>
+                <td><b>email</b></td>
+                <td>The organization email address.</td>
+            </tr>
+            <tr>
+                <td><b>password</b></td>
+                <td>The password to set for the organization.</td>
+            </tr>
+            <tr>
+                <td><b>name</b></td>
+                <td>The organization name.</td>
+            </tr>
+            <tr>
+                <td><b>description</b></td>
+                <td>A description for the organization.</td>
+            </tr>
+            <tr>
+                <td><b>url</b></td>
+                <td>A url for the organization.</td>
+            </tr>
+        </table>
+        
+        <h6>Example:</h6>
+        <pre class="prettyprint">
+{
+    email: 'test@test.com',
+    password: 'testpass',
+    name: 'The Test Organization',
+    description: 'This is a test organization.',
+    url: 'http://test.com'
+}
+        </pre>
+    </div>
+    <div class="extra span4">
+        Stub organizations can easily be created without setting any of the fields.
+        However, they may be culled eventually.
+    </div>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h4>PUT <small>Updates an existing organization.</small></h4>
+        <table class="zebra-striped">
+            <tr>
+                <td><b>email</b></td>
+                <td>The organization email address.</td>
+            </tr>
+            <tr>
+                <td><b>password</b></td>
+                <td>The password to set for the organization.</td>
+            </tr>
+            <tr>
+                <td><b>name</b></td>
+                <td>The organization name.</td>
+            </tr>
+            <tr>
+                <td><b>description</b></td>
+                <td>A description for the organization.</td>
+            </tr>
+            <tr>
+                <td><b>url</b></td>
+                <td>A url for the organization.</td>
+            </tr>
+        </table>
+        
+        <h6>Example:</h6>
+        <pre class="prettyprint">
+{
+    email: 'newemail@test.com',
+    description: 'This is a new test organization description.'
+}
+        </pre>
+    </div>
+    <div class="extra span4">
+        <b>Requires Basic HTTP Authentication as the target organization.</b>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h4>GET <small>Retrieves an uncensored version of the current organization.</small></h4>
+        
+        <h6>Example:</h6>
+        <pre class="prettyprint">
+{
+    "updatedAt": "2011-12-13T11:03:15.000Z",
+    "apiSecret": "233bb10f64e4415c6c5f4e6457bcb66bd505d6c5",
+    "url": "http://test.com",
+    "description": "This is the test organization!",
+    "name": "test",
+    "passwordHash": "8167811ade95d0047af167703641944f6b2ac696",
+    "email": "test@test.com",
+    "_id": "4ee730f3187f51171f000026"
+}
+        </pre>
+    </div>
+    <div class="extra span4">
+        <b>Requires Basic HTTP Authentication as the target organization.</b>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h3>URL: /Organization/:organizationId</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h4>GET <small>Retrieves an censored version of the specified organization.</small></h4>
+        
+        <h6>Example:</h6>
+        <pre class="prettyprint">
+{
+    "_id": "4ee730f3187f51171f000026",
+    "name": "test",
+    "description": "This is the test organization!",
+    "url": "http://test.com",
+    "updatedAt": "2011-12-13T11:03:15.000Z"
+}
+        </pre>
+    </div>
+    <div class="extra span4">
+    </div>
+</div>
+
+<div class="row">
+    <div class="span10">
+        <h4>DELETE <small>Deletes the specified organization, if it is the authenticated organization.</small></h4>
+    </div>
+    <div class="extra span4">
+        <h3>WARNING!</h3>
+        <b>Using this method will delete the autheticated organization!</b>
+        <p>
+            <b>Requires Basic HTTP Authentication as the target organization.</b>
+        </p>
+    </div>
+</div>
+
