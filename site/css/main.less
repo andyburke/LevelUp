@@ -1,14 +1,94 @@
-.box-shadow (@x: 0, @y: 0, @blur: 1px, @alpha) {
-  @val: @x @y @blur rgba(0, 0, 0, @alpha);
+@foreground-light: #888;
+@foreground-dark: #111313;
+@background: #f4f4f8;
 
-  box-shadow:         @val;
-  -webkit-box-shadow: @val;
-  -moz-box-shadow:    @val;
+body
+{
+  padding-top: 40px;
+  margin: 0px;
+  font-family: Helvetica, sans-serif;
+  background-color: @background;
 }
 
-.box {
-  @base: #f938ab;
-  color:        saturate(@base, 5%);
-  border-color: lighten(@base, 30%);
-  div { .box-shadow(0, 0, 5px, 0.4) }
+a
+{
+  color: #779999;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.container
+{
+  width: 840px;
+}
+
+.content
+{
+  background-color: #fff;
+  padding: 20px;
+  margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+  -webkit-border-radius: 0 0 6px 6px;
+     -moz-border-radius: 0 0 6px 6px;
+          border-radius: 0 0 6px 6px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+     -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+          box-shadow: 0 1px 2px rgba(0,0,0,.15);
+
+  .page-header
+  {
+    background-color: darken( @background, 2% );
+    padding: 20px 20px 10px;
+    margin: -20px -20px 20px;
+  }
+
+  .extra
+  {
+    padding-left: 19px;
+    border-left: 1px solid #eee;
+    min-height: 200px;
+  }
+}
+
+.plan-block
+{
+  position: relative;
+  padding: 10px;
+  background-color: darken( @background, 10% );
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 2px 3px rgba(0,0,0,.15);
+     -moz-box-shadow: 0 2px 3px rgba(0,0,0,.15);
+          box-shadow: 0 2px 3px rgba(0,0,0,.15);
+
+
+  min-height: 200px;
+  p
+  {
+    color: #555;
+    font-size: 14px;
+  }
+  
+  h2
+  {
+    text-align: center;
+    margin-bottom: 6px;
+
+    small
+    {
+      color: #666;
+    }
+  }
+  
+  h3
+  {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    
+    small
+    {
+      color: #666;
+    }
+  }
 }

@@ -25,4 +25,4 @@ achievementClasses.bindToApp( app );
 var achievements = require( './api/Achievements.js' );
 achievements.bindToApp( app );
 
-app.listen( process.env.PORT || 8000 );
+app.listen( process.env.LEVELUP_PORT || 8000 );

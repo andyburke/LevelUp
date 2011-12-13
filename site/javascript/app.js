@@ -1,3 +1,9 @@
+function SetActivePage( page )
+{
+    $('.navItem').removeClass( 'active' );
+    $('#nav-' + page).addClass( 'active' );
+}
+
 ;(function($) {
     var templateCache = {};
     
@@ -25,15 +31,28 @@
     this.templates = {};
     
     this.get('#/', function() {
-      $('#main').text('');
+        SetActivePage( 'about' );
+        renderTemplate( '#main', "/templates/home.mustache", null );
     });
 
-    this.get('#/test', function() {
-        renderTemplate( '#main', "/templates/organization.mustache", { name: 'Test', email: 'test@test.com' } );
+    this.get('#/SignUp/User', function() {
+        SetActivePage( 'signup' );
+        renderTemplate( '#main', "/templates/user.signup.mustache", null );
+    });
+
+    this.get('#/SignUp/Developer', function() {
+        SetActivePage( 'signup' );
+        renderTemplate( '#main', "/templates/developer.signup.mustache", null );
+    });
+
+    this.get('#/Pricing', function() {
+        SetActivePage( 'pricing' );
+        renderTemplate( '#main', "/templates/pricing.mustache", null );
     });
   });
 
   $(function() {
+    $('#topbar').dropdown();
     app.run('#/');
   })
 })(jQuery);
