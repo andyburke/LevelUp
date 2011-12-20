@@ -2,7 +2,7 @@ var models = require( './models.js' );
 var checks = require( './checks.js' );
 
 exports.bindToApp = function( app ) {
-    app.post( '/AchievementClass', checks.organizationAuth, function( request, response ) {
+    app.post( '/Organization/:organizationId/Context/:contextId/AchievementClass', checks.organizationAuth, function( request, response ) {
         models.Context.findById( request.param( 'contextId' ), function( error, context ) {
             if ( error )
             {
@@ -42,7 +42,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.put( '/AchievementClass/:classId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
+    app.put( '/Organization/:organizationId/Context/:contextId/AchievementClass/:classId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
         request.achievementClass.name = request.param( 'name' ) ? request.param( 'name' ) : request.achievementClass.name;
         request.achievementClass.description = request.param( 'description' ) ? request.param( 'description' ) : request.achievementClass.description;
         request.achievementClass.image = request.param( 'image' ) ? request.param( 'image' ) : request.achievementClass.image;
@@ -59,7 +59,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/AchievementClass/:classId', function( request, response ) {
+    app.get( '/Organization/:organizationId/Context/:contextId/AchievementClass/:classId', function( request, response ) {
         models.AchievementClass.findById( request.params.classId, function( error, achievementClass ) {
             if ( error )
             {
@@ -77,7 +77,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/AchievementClass/:classId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
+    app.del( '/Organization/:organizationId/Context/:contextId/AchievementClass/:classId', checks.organizationAuth, checks.ownsAchievementClass, function( request, response ) {
         request.achievementClass.remove( function( error ) {
             if ( error )
             {
@@ -89,7 +89,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/AchievementClasses/:contextId', function( request, response ) {
+    app.get( '/Organization/:organizationId/Context/:contextId/AchievementClasses', function( request, response ) {
         models.AchievementClass.find( { 'contextId': request.params.contextId }, function( error, achievementClasses ) {
             if ( error )
             {

@@ -5,7 +5,7 @@ exports.bindToApp = function( app ) {
     
     app.post( '/Achievement', checks.organizationAuth, function( request, response ) {
         var newAchievement = new models.Achievement();
-        newAchievement.personHash = request.param( 'personHash' );
+        newAchievement.userHash = request.param( 'userHash' );
         newAchievement.organizationId = request.organization._id;
         newAchievement.contextId = request.param( 'contextId' );
         newAchievement.classId = request.param( 'classId' );
@@ -17,7 +17,7 @@ exports.bindToApp = function( app ) {
                 return; // not ready to save yet
             }
             
-            models.Achievement.findOne( { 'personHash': newAchievement.personHash, 'classId': newAchievement.classId }, function( error, achievement ) {
+            models.Achievement.findOne( { 'userHash': newAchievement.userHash, 'classId': newAchievement.classId }, function( error, achievement ) {
                 if ( error )
                 {
                     response.json( error, 500 );
@@ -105,8 +105,8 @@ exports.bindToApp = function( app ) {
         }
     });
     
-    app.get( '/Achievements/:personHash/:contextId?', function( request, response ) {
-        var criteria = { 'personHash': request.params.personHash };
+    app.get( '/Achievements/:userHash/:contextId?', function( request, response ) {
+        var criteria = { 'userHash': request.params.userHash };
         
         if ( request.params.contextId )
         {
@@ -124,8 +124,8 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/AchievementStream/:personHash/:contextId?', function( request, response ) {
-        var criteria = { 'personHash': request.params.personHash };
+    app.get( '/AchievementStream/:userHash/:contextId?', function( request, response ) {
+        var criteria = { 'userHash': request.params.userHash };
         if ( request.params.contextId )
         {
             criteria.contextId = request.params.contextId;

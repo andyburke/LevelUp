@@ -1,106 +1,52 @@
 var models = require( './models.js' );
 var checks = require( './checks.js' );
 
-var sha1 = require( 'sha1' );
-
 var censoredFields = {
-    'email': true ,
-    'passwordHash': true,
     'apiSecret': true
 };
 
 exports.bindToApp = function( app ) {
-    app.post( '/Organization', function( request, response ) {
-        var email = request.param( 'email' );
-        var password = request.param( 'password' );
+    app.post( '/Organization', checks.user, function( request, response ) {
         var name = request.param( 'name' );
         var description = request.param( 'description' );
         var url = request.param( 'url' );
         
         var newOrganization = new models.Organization();
-        newOrganization.email = email ? email.toLowerCase() : '';
-        newOrganization.passwordHash = password ? sha1( password ) : '';
         newOrganization.name = name ? name : '';
         newOrganization.description = description ? description : '';
         newOrganization.url = url ? url : '';
         newOrganization.updateApiSecret();
+        newOrganization.ownerIds = [ request.session.user._id ];
         
-        models.Organization.findOne( { 'email': email }, function( error, organization ) {
-            if ( error )
+        newOrganization.save( function( saveError ) {
+            if ( saveError )
             {
-                response.json( error, 500 );
-                return;
-            }
-            
-            if ( organization )
-            {
-                response.json( { 'error': 'An organization associated with this email address already exists.' }, 409 );
+                response.json( saveError, 500 );
                 return;
             }
     
-            newOrganization.save( function( saveError ) {
-                if ( saveError )
-                {
-                    response.json( saveError, 500 );
-                    return;
-                }
-        
-                response.json( newOrganization );
-            });
+            response.json( newOrganization );
         });
     });
     
-    app.put( '/Organization', checks.organizationAuth, function( request, response ) {
-        request.organization.passwordHash = request.param( 'password' ) ? sha1( request.param( 'password' ) ) : request.organization.passwordHash;
+    app.put( '/Organization/:organizationId', checks.organizationAuth, function( request, response ) {
         request.organization.name = request.param( 'name' ) ? request.param( 'name' ) : request.organization.name;
         request.organization.description = request.param( 'description' ) ? request.param( 'description' ) : request.organization.description;
         request.organization.url = request.param( 'url' ) ? request.param( 'url' ) : request.organization.url;
+        request.organization.ownerIds = request.param( 'ownerIds' ) ? request.param( 'ownerIds' ) : request.organization.ownerIds;
         
-        function save()
-        {
-            // update the api secret before saving
-            request.organization.updateApiSecret();
+        // update the api secret before saving
+        request.organization.updateApiSecret();
             
-            request.organization.save( function( saveError ) {
-                if ( saveError )
-                {
-                    response.json( saveError, 500 );
-                    return;
-                }
-                
-                response.json( request.organization );
-            });
-        }
-        
-        if ( request.param( 'email' ) )
-        {
-            models.Organization.findOne( { 'email': request.param( 'email' ).toLowerCase() }, function( error, existingOrganization ) {
-                if ( error )
-                {
-                    response.json( error, 500 );
-                    return;
-                }
-                
-                if ( existingOrganization )
-                {
-                    response.json( 'An organization already exists with the email you are requesting to use.', 409 );
-                    return;
-                }
-    
-                request.organization.email = request.param( 'email' ).toLowerCase();
-                save();
+        request.organization.save( function( saveError ) {
+            if ( saveError )
+            {
+                response.json( saveError, 500 );
                 return;
-            });
-        }
-        else
-        {
-            save();
-        }
-        
-    });
-    
-    app.get( '/Organization', checks.organizationAuth, function( request, response ) {
-        response.json( request.organization );
+            }
+            
+            response.json( request.organization );
+        });
     });
     
     app.get( '/Organization/:organizationId', function( request, response ) {
@@ -117,16 +63,14 @@ exports.bindToApp = function( app ) {
                 return;
             }
             
-            var censoredOrganization = {};
-            for ( var key in organization._doc )
+            if ( request.session.user && organization.ownerIds.indexOf( request.session.user._id ) != -1 )
             {
-                if ( !( key in censoredFields ) )
-                {
-                    censoredOrganization[ key ] = organization[ key ];
-                }
+                // if we're logged in and an owner, send back an uncensored version
+                response.json( organization );
+                return;
             }
-    
-            response.json( censoredOrganization );
+            
+            response.json( organization.censored( { 'apiSecret': true, 'ownerIds': true } ) );
         });
     });
     

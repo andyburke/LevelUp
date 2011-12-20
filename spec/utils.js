@@ -4,16 +4,14 @@ exports.debug = true;
 
 exports.levelUpUrl = process.env[ 'LEVELUP_URL' ] != null ? process.env[ 'LEVELUP_URL' ] : 'http://localhost:8000';
 
-exports.authString = function( organizationData )
+exports.authString = function( data )
 {
-    return 'Basic ' + new Buffer( organizationData.email + ':' + organizationData.password ).toString( 'base64' );
+    return 'Basic ' + new Buffer( data.email + ':' + data.password ).toString( 'base64' );
 }
 
 exports.getOrganizationData = function( organizationName )
 {
     return {
-        email: 'test@' + organizationName + '.com',
-        password: 'testing-' + organizationName,
         name: organizationName,
         description: 'This is the ' + organizationName + ' organization!',
         url: 'http://' + organizationName + '.com'
@@ -41,7 +39,18 @@ exports.getAchievementClassData = function( achievementClassName, context )
     };
 }
 
-exports.personHash = function()
+exports.getUserData = function( userName )
 {
-    return md5( 'test@test.com' );
+    return {
+        'email': userName + '@test.com',
+        'password': userName + 'pass',
+        'nickname': userName + 'nick',
+        'bio': 'Bio for user: ' + userName,
+        'location': userName + ', USA'
+    }
+}
+
+exports.userHash = function( userData )
+{
+    return md5( userData.email );
 }

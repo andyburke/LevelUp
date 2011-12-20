@@ -5,19 +5,33 @@ var UseTimestamps = MongooseTypes.useTimestamps;
 
 var sha1 = require( 'sha1' );
 
+// TODO: make this be on the mongoose model prototype
+var censor = exports.censor = function ( object, fields )
+{
+    var censored = {};
+    for ( var key in ( object._doc || object ) )
+    {
+        if ( !( key in fields ) )
+        {
+            censored[ key ] = object[ key ];
+        }
+    }
+    return censored;
+}
+
 exports.OrganizationSchema = new mongoose.Schema({
-    email: { type: String, index: true },
-    passwordHash: { type: String },
     apiSecret: { type: String },
     name: { type: String },
     description: { type: String },
-    url: { type: String }
+    url: { type: String },
+    ownerIds: { type: Array }
 });
 exports.OrganizationSchema.plugin( UseTimestamps );
 exports.Organization = mongoose.model( 'Organization', exports.OrganizationSchema );
 exports.Organization.prototype.updateApiSecret = function() {
-    this.apiSecret = sha1( 'SO SECRET!' + this.email + this.passwordHash + this.name + new Date() );      
+    this.apiSecret = sha1( 'SO SECRET!' + this.name + new Date() );      
 };
+exports.Organization.prototype.censored = function( fields ) { return censor( this, fields ); };
 
 exports.ContextSchema = new mongoose.Schema({
     organizationId: { type: mongoose.Schema.ObjectId, index: true },
@@ -41,7 +55,7 @@ exports.AchievementClassSchema.plugin( UseTimestamps );
 exports.AchievementClass = mongoose.model( 'AchievementClass', exports.AchievementClassSchema );
 
 exports.AchievementSchema = new mongoose.Schema({
-    personHash: { type: String, index: true },
+    userHash: { type: String, index: true },
     organizationId: { type: mongoose.Schema.ObjectId, index: true },
     contextId: { type: mongoose.Schema.ObjectId, index: true },
     classId: { type: mongoose.Schema.ObjectId }
@@ -49,7 +63,7 @@ exports.AchievementSchema = new mongoose.Schema({
 exports.AchievementSchema.plugin( UseTimestamps );
 exports.Achievement = mongoose.model( 'Achievement', exports.AchievementSchema )
 
-exports.PersonSchema = new mongoose.Schema({
+exports.UserSchema = new mongoose.Schema({
     hash: { type: String, unique: true },
     email: { type: String, index: true },
     passwordHash: { type: String },
@@ -58,6 +72,6 @@ exports.PersonSchema = new mongoose.Schema({
     location: { type: String },
     score: { type: Number, default: 0 }
 });
-exports.PersonSchema.plugin( UseTimestamps );
-exports.Person = mongoose.model( 'Person', exports.PersonSchema );
-
+exports.UserSchema.plugin( UseTimestamps );
+exports.User = mongoose.model( 'User', exports.UserSchema );
+exports.User.prototype.censored = function( fields ) { return censor( this, fields ); };
