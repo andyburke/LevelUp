@@ -9,3 +9,4 @@
  - Run the test suite: 'node_modules/jasmine-node/bin/jasmine-node --color spec/'
  - All tests should complete successfully
  
+---
