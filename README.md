@@ -10,3 +10,7 @@
  - All tests should complete successfully
  
 ---
+
+# About
+
+This is a thing.
