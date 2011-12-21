@@ -9,7 +9,7 @@ exports.bindToApp = function( app ) {
         
         if ( request.session.user )
         {
-            response.json( { 'created': false } );
+            response.json( { 'created': false, 'user': request.session.user } );
             return;   
         }
         
