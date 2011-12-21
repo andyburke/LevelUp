@@ -76,6 +76,24 @@ var app = Sammy( function() {
             renderTemplate( '#main', '/templates/myaccount.mustache', currentUser );
         }
     });
+    
+    this.get( '#/User/:hash', function() {
+        $('#main').toggleLoading();
+
+        $.ajax({
+            url: apiServer + '/User/' + this.params[ 'hash' ],
+            type: 'GET',
+            dataType: 'json',
+            success: function( data ) {
+                $('#main').toggleLoading();
+                renderTemplate( '#main', '/templates/user.mustache', data );
+            },
+            error: function( response, status, error ) {
+                $('#main').toggleLoading();
+                console.log( error );
+            }
+        });
+    });
 });
 
 $(function() {

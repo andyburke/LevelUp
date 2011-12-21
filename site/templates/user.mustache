@@ -1,0 +1,20 @@
+<h1>{{ nickname }}</h1>
+<form>
+  <fieldset>
+    <div class="clearfix">
+      <label for="location">Location</label>
+      <div class="input">
+        <input class="span5 disabled" id="location" name="location" type="text" value="{{ location }}" placeholder="eg: Los Angeles, CA" disabled/>
+      </div>
+    </div><!-- /clearfix -->
+    <div class="clearfix">
+      <label for="textarea">Bio</label>
+      <div class="input">
+        <textarea class="span5 disabled" id="bio" name="bio" rows="3" disabled>{{ bio }}</textarea>
+      </div>
+    </div><!-- /clearfix -->
+  </fieldset>
+</form>
+
+<p>
+<h1>Web Score: {{ score }}</h1>
