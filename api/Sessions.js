@@ -7,7 +7,7 @@ exports.bindToApp = function( app ) {
     
     app.post( '/Session', function( request, response ) {
         
-        if ( request.session )
+        if ( request.session.user )
         {
             response.json( { 'created': false } );
             return;   
