@@ -134,6 +134,7 @@ function HandleAuthentication( resource, form )
         }),
         dataType: 'json',
         contentType: 'application/json',
+        cache: false,
         success: function( data ) {
             if ( resource == 'User' )
             {
