@@ -46,6 +46,9 @@ exports.bindToApp = function( app ) {
                     return;
                 }
         
+                request.session.user = newUser;
+                request.session.save();
+                
                 response.json( newUser.censored( { 'passwordHash': true } ) );
             });
         });

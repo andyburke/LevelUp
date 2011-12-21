@@ -6,6 +6,13 @@ var sha1 = require( 'sha1' );
 exports.bindToApp = function( app ) {
     
     app.post( '/Session', function( request, response ) {
+        
+        if ( request.session )
+        {
+            response.json( { 'created': false } );
+            return;   
+        }
+        
         var email = null;
         var password = null;
         

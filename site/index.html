@@ -12,6 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-dropdown.js" type="text/javascript"></script>
     <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-buttons.js" type="text/javascript"></script>
+    <script src="javascript/lib/jquery.loading.min.js" type="text/javascript"></script>
     <script src="javascript/lib/sammy-latest.min.js" type="text/javascript"></script>
     <script src="javascript/lib/mustache.js" type="text/javascript"></script>
     <script src="javascript/lib/less.js" type="text/javascript"></script>
@@ -26,20 +27,17 @@
                 <a class="brand" href="#">LevelUp.io</a>
                 <ul class="nav">
                     <li class="navItem active" id="nav-about"><a href="#/">About</a></li>
-                    <li class="navItem active" id="nav-api"><a href="#/API">API</a></li>
-                    <!-- <li class="navItem" id="nav-pricing"><a href="#/Pricing">Pricing</a></li> -->
-                    <li class="navItem dropdown" id="nav-signup" data-dropdown="dropdown" >
-                        <a href="#" class="dropdown-toggle">Sign Up!</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#/SignUp/User">I'm a user!</a></li>
-                            <li><a href="#/SignUp/Developer">I'm a developer!</a></li>
-                        </ul>
-                    </li>
+                    <li class="navItem" id="nav-api"><a href="#/API">API</a></li>
+                    <li class="navItem unauthenticated" id="nav-signup"><a href="#/SignUp">Sign Up!</a></li>
+                    <li class="navItem authenticated" id="nav-myaccount"><a href="#/MyAccount">My Account</a></li>
                 </ul>
-                <form action="" class="pull-right">
-                  <input class="input-small" type="text" placeholder="Username">
-                  <input class="input-small" type="password" placeholder="Password">
-                  <button class="btn" type="submit">Sign in</button>
+                <form id="topbar-signin-form" action="" class="pull-right unauthenticated">
+                  <input class="input-small" type="text" name="email" placeholder="Email">
+                  <input class="input-small" type="password" name="password" placeholder="Password">
+                  <button class="btn button-signin" type="submit">Sign In</button>
+                </form>
+                <form id="topbar-signout-form" action="" class="pull-right authenticated">
+                    <button id="topbar-signout-button" class="btn pull-right button-signout" type="submit">Sign Out</button>
                 </form>
             </div>
         </div>

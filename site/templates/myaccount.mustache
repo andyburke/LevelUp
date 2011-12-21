@@ -1,0 +1,45 @@
+<h1>My Account</h1>
+<form>
+  <fieldset>
+    <div class="clearfix">
+      <label>Unique ID</label>
+      <div class="input">
+        <span class="uneditable-input span5">{{ hash }}</span>
+        <span class="help-inline">This changes if you change your email.</span>
+      </div>
+    </div><!-- /clearfix -->
+    <div class="clearfix">
+      <label for="email">Email</label>
+      <div class="input">
+        <input class="span5" id="email" name="email" type="text" value="{{ email }}" />
+      </div>
+    </div><!-- /clearfix -->
+    <div class="clearfix">
+      <label for="nickname">Nickname</label>
+      <div class="input">
+        <input class="span5" id="nickname" name="nickname" type="text" value="{{ nickname }}" />
+      </div>
+    </div><!-- /clearfix -->
+    <div class="clearfix">
+      <label for="location">Location</label>
+      <div class="input">
+        <input class="span5" id="location" name="location" type="text" value="{{ location }}" placeholder="eg: Los Angeles, CA" />
+      </div>
+    </div><!-- /clearfix -->
+    <div class="clearfix">
+      <label for="textarea">Bio</label>
+      <div class="input">
+        <textarea class="span5" id="bio" name="bio" rows="3">{{ bio }}</textarea>
+        <span class="help-block">
+          Enter a short bio if you please.
+        </span>
+      </div>
+    </div><!-- /clearfix -->
+    <div class="actions">
+        <button class="btn primary update-account-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-account-button">Reset</button>
+    </div>
+    </fieldset>
+</form>
+
+<p>
+<h1>Web Score: {{ score }}</h1>
