@@ -1,0 +1,19 @@
+<table class="zebra-striped">
+    <tr>
+        <th>Context</th>
+        <th>URL</tH>
+        <th>Description</th>
+    </tr>
+    {{#contexts}}
+        <tr>
+            <td><a href="#/ManageOrganization/{{organization._id}}/ManageContext/{{_id}}">{{name}}</a></td>
+            <td><a href="{{url}}" target="_blank">{{url}}</a></td>
+            <td>{{description}}</td>
+        </tr>
+    {{/contexts}}
+</table>
+
+<div class="pull-right">
+    <a href="#/CreateContext/{{organization._id}}">Create New</a>
+</div>
+

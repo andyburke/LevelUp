@@ -49,6 +49,18 @@ exports.bindToApp = function( app ) {
         });
     });
     
+    app.get( '/Organizations', checks.user, function( request, response ) {
+        models.Organization.find( { 'ownerIds': request.session.user._id } , function( error, organizations ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            response.json( organizations );
+        });
+    });
+    
     app.get( '/Organization/:organizationId', function( request, response ) {
         models.Organization.findById( request.params.organizationId, function( error, organization ) {
             if ( error )

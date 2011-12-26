@@ -1,0 +1,13 @@
+<table class="zebra-striped">
+    <tr>
+        <th>Organization</th>
+    </tr>
+    {{#organizations}}
+        <tr>
+            <td><a href="#/ManageOrganization/{{_id}}">{{name}}</a></td>
+        </tr>
+    {{/organizations}}
+</table>
+<div class="pull-right">
+    <a href="#/CreateOrganization">Create New</a>
+</div>

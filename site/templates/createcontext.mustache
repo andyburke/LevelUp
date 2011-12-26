@@ -1,0 +1,42 @@
+<div class="page-header">
+    <h1>{{organization.name}} &gt; Create Context</h1>
+</div>
+<div class="row">
+    <div class="span8">
+        <form>
+            <fieldset>
+                <div class="clearfix">
+                    <label for="name">Name</label>
+                    <div class="input">
+                        <input class="span5" id="name" name="name" size="30" type="text" />
+                    </div>
+                </div><!-- /clearfix -->
+                <div class="clearfix">
+                    <label for="url">URL</label>
+                    <div class="input">
+                        <input class="span5" id="url" name="url" size="30" type="text" />
+                    </div>
+                </div><!-- /clearfix -->
+                <div class="clearfix">
+                    <label for="description">Description</label>
+                    <div class="input">
+                        <textarea class="span5" id="description" name="description" rows="3"></textarea>
+                    </div>
+                </div><!-- /clearfix -->
+                <input type="hidden" id="organizationId" name="organizationId" value="{{organization._id}}" />
+                <div class="actions">
+                    <input type="submit" class="btn primary button-create-context" value="Create">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="extra span6">
+        <h2>Create a Context</h2>
+        <p>
+            A context is something that has achievement classes associated with it.  For instance,
+            you might create a context for a website or a game.  You can create multiple
+            contexts within a given organization.  So, if your company has multiple websites or
+            games, you should create multiple contexts to support them.
+        </p>
+    </div>
+</div>

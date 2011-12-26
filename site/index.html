@@ -27,7 +27,13 @@
                 <a class="brand" href="#/">LevelUp.io</a>
                 <ul class="nav">
                     <li class="navItem active" id="nav-about"><a href="#/">About</a></li>
-                    <li class="navItem" id="nav-api"><a href="#/API">API</a></li>
+                    <li class="navItem dropdown">
+                        <a href="#" class="dropdown-toggle">Developers</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="navItem authenticated" id="nav-manageorganizations" href="#/ManageOrganizations">Manage Organizations</a></li>
+                            <li><a class="navItem" id="nav-api" href="#/API">API Documentation</a></li>
+                        </ul>
+                    </li>
                     <li class="navItem unauthenticated" id="nav-signup"><a href="#/SignUp">Sign Up!</a></li>
                     <li class="navItem authenticated" id="nav-myaccount"><a href="#/MyAccount">My Account</a></li>
                 </ul>

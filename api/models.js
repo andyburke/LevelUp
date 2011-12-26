@@ -24,6 +24,7 @@ exports.OrganizationSchema = new mongoose.Schema({
     name: { type: String },
     description: { type: String },
     url: { type: String },
+    imageUrl: { type: String },
     ownerIds: { type: Array }
 });
 exports.OrganizationSchema.plugin( UseTimestamps );
