@@ -1,20 +1,37 @@
-<h1>{{ nickname }}</h1>
-<form>
-  <fieldset>
-    <div class="clearfix">
-      <label for="location">Location</label>
-      <div class="input">
-        <input class="span5 disabled" id="location" name="location" type="text" value="{{ location }}" placeholder="eg: Los Angeles, CA" disabled/>
-      </div>
-    </div><!-- /clearfix -->
-    <div class="clearfix">
-      <label for="textarea">Bio</label>
-      <div class="input">
-        <textarea class="span5 disabled" id="bio" name="bio" rows="3" disabled>{{ bio }}</textarea>
-      </div>
-    </div><!-- /clearfix -->
-  </fieldset>
-</form>
-
-<p>
-<h1>Web Score: {{ score }}</h1>
+<div class="page-header">
+    <h1>{{user.nickname}}</h1>
+</div>
+<div class="row">
+    <div class="span5">
+        <img src="http://www.gravatar.com/avatar/{{user.hash}}?s=256&d=mm">
+        <p>
+        <h1>Web Score: {{user.score}}</h1>
+    </div>
+    <div class="span8">
+        <form>
+          <fieldset>
+            <div class="clearfix">
+              <label for="location">Location</label>
+              <div class="input">
+                <input class="span5 disabled" id="location" name="location" type="text" value="{{user.location}}" placeholder="eg: Los Angeles, CA" disabled/>
+              </div>
+            </div><!-- /clearfix -->
+            <div class="clearfix">
+              <label for="textarea">Bio</label>
+              <div class="input">
+                <textarea class="span5 disabled" id="bio" name="bio" rows="3" disabled>{{user.bio}}</textarea>
+              </div>
+            </div><!-- /clearfix -->
+          </fieldset>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="span13">
+        <h1>Achievements</h1>
+    </div>
+</div>
+<div class="row">
+    <div id="achievements" class="span13">
+    </div>
+</div>
