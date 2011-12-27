@@ -67,7 +67,11 @@ exports.bindToApp = function( app ) {
                 user.nickname = request.param( 'nickname' ) ? request.param( 'nickname' ) : user.nickname;
                 user.bio = request.param( 'bio' ) ? request.param( 'bio' ) : user.bio;
                 user.location = request.param( 'location' ) ? request.param( 'location' ) : user.location;
-                user.updateApiSecret();
+
+                if ( request.param( 'email' ) || request.param( 'password' ) )
+                {
+                    user.updateApiSecret();
+                }
 
                 user.save( function( saveError ) {
                     if ( saveError )
