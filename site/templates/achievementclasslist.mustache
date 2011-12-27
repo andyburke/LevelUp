@@ -1,0 +1,19 @@
+<table class="zebra-striped">
+    <tr>
+        <th></th>
+        <th>AchievementClass</th>
+        <th>Description</th>
+        <th>Points</th>
+    </tr>
+    {{#classes}}
+        <tr>
+            <td><a href="#/Context/{{context._id}}/ManageAchievementClass/{{_id}}"><img src="{{image}}"></a></td>
+            <td><a href="#/Context/{{context._id}}/ManageAchievementClass/{{_id}}">{{name}}</a></td>
+            <td>{{description}}</td>
+            <td>{{points}}</td>
+        </tr>
+    {{/classes}}
+</table>
+<div class="pull-right">
+    <a href="#/Context/{{context._id}}/CreateAchievementClass">Create New</a>
+</div>

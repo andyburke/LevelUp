@@ -1,33 +1,40 @@
-<h1>{{name}}</h1>
-<form>
-  <fieldset>
-    <div class="clearfix">
-      <label>Unique ID</label>
-      <div class="input">
-        <input class="span5 disabled" id="id" name="id" type="text" value="{{_id}}" disabled />
-      </div>
-    </div><!-- /clearfix -->
-    <div class="clearfix">
-      <label for="name">Name</label>
-      <div class="input">
-        <input class="span5" id="name" name="name" type="text" value="{{name}}" />
-      </div>
-    </div><!-- /clearfix -->
-    <div class="clearfix">
-      <label for="url">URL</label>
-      <div class="input">
-        <input class="span5" id="url" name="url" type="text" value="{{url}}" />
-      </div>
-    </div><!-- /clearfix -->
-    <div class="clearfix">
-      <label for="textarea">Description</label>
-      <div class="input">
-        <textarea class="span5" id="description" name="description" rows="3">{{description}}</textarea>
-      </div>
-    </div><!-- /clearfix -->
-    <input type="hidden" id="organizationId" name="organizationId" value={{organizationId}} />
-    <div class="actions">
-        <button class="btn primary update-context-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-context-button">Reset</button>
-    </div>
-    </fieldset>
-</form>
+<div class="page-header">
+    <h1>{{name}}</h1>
+</div>
+<div class="row">
+    <form>
+      <fieldset>
+        <div class="clearfix">
+          <label>Unique ID</label>
+          <div class="input">
+            <input class="span5 disabled" id="id" name="id" type="text" value="{{_id}}" disabled />
+          </div>
+        </div><!-- /clearfix -->
+        <div class="clearfix">
+          <label for="name">Name</label>
+          <div class="input">
+            <input class="span5" id="name" name="name" type="text" value="{{name}}" />
+          </div>
+        </div><!-- /clearfix -->
+        <div class="clearfix">
+          <label for="url">URL</label>
+          <div class="input">
+            <input class="span5" id="url" name="url" type="text" value="{{url}}" />
+          </div>
+        </div><!-- /clearfix -->
+        <div class="clearfix">
+          <label for="textarea">Description</label>
+          <div class="input">
+            <textarea class="span5" id="description" name="description" rows="3">{{description}}</textarea>
+          </div>
+        </div><!-- /clearfix -->
+        <input type="hidden" id="organizationId" name="organizationId" value={{organizationId}} />
+        <div class="actions">
+            <button class="btn primary update-context-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-context-button">Reset</button>
+        </div>
+        </fieldset>
+    </form>
+</div>
+<div class="row" id="achievementclasses">
+</div>
+

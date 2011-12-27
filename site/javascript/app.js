@@ -28,6 +28,8 @@ function SetActivePage( page )
 
 var g_TemplateCache = {};
 var g_ContextCache = {};
+var g_AchievementClassListCache = {};
+var g_AchievementClassCache = {};
 
 function renderTemplate( elementSelector, template, data, callback ) {
     if ( g_TemplateCache[ template ] )
@@ -182,20 +184,84 @@ var app = Sammy( function() {
         $( '#main' ).toggleLoading();
         
         var contextId = this.params[ 'contextId' ];
-        var context = g_ContextCache[ contextId ];
+        var cachedContext = g_ContextCache[ contextId ];
+        var cachedClasses = g_AchievementClassListCache[ contextId ];
         
-        if ( !context )
+        function renderAchievementClasses( context, classes )
+        {
+            renderTemplate( '#achievementclasses', '/templates/achievementclasslist.mustache', { 'context': context, 'classes': classes }, function () {
+                $( '#achievementclasses' ).toggleLoading();                
+            });
+        }
+
+        function renderContext( context )
+        {
+            renderTemplate( '#main', '/templates/managecontext.mustache', context, function() {
+                $( '#main' ).toggleLoading();
+                
+                $( '#achievementclasses' ).toggleLoading();
+                
+                if ( !cachedClasses )
+                {
+                    $.ajax({
+                            url: apiServer + '/Context/' + context._id + '/AchievementClasses',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function( classes ) {
+                                g_AchievementClassListCache[ contextId ] = classes;
+                                renderAchievementClasses( context, classes );
+                            },
+                            error: function( response, status, error ) {
+                                $( '#achievementclasses' ).toggleLoading();
+                                console.log( error );
+                            }
+                    });
+                }
+                else
+                {
+                    renderAchievementClasses( context, cachedClasses );
+                }
+            });
+        }
+        
+        
+        if ( !cachedContext )
         {
             $.ajax({
-                url: apiServer + '/Context/' + context._id,
+                url: apiServer + '/Context/' + contextId,
                 type: 'GET',
                 dataType: 'json',
                 success: function( context ) {
-                    $( '#main' ).toggleLoading();
-                    
                     g_ContextCache[ context._id ] = context;
-                    
-                    renderTemplate( '#main', '/templates/managecontext.mustache', context, function() {
+                    renderContext( context );
+                },
+                error: function( response, status, error ) {
+                    $( '#main' ).toggleLoading();
+                    console.log( error );
+                }
+            });
+        }
+        else
+        {
+            renderContext( cachedContext );
+        }
+    });
+
+    this.get( '#/Context/:contextId/CreateAchievementClass', function () {
+        $( '#main' ).toggleLoading();
+
+        var contextId = this.params[ 'contextId' ];
+        var cachedContext = g_ContextCache[ contextId ];
+
+        if ( !cachedContext )
+        {
+            $.ajax({
+                url: apiServer + '/Context/' + contextId,
+                type: 'GET',
+                dataType: 'json',
+                success: function( context ) {
+                    g_ContextCache[ context._id ] = context;
+                    renderTemplate( '#main', '/templates/createachievementclass.mustache', { 'context': context }, function () {
                         $( '#main' ).toggleLoading();
                     });
                 },
@@ -204,15 +270,76 @@ var app = Sammy( function() {
                     console.log( error );
                 }
             });
-            
         }
         else
         {
-            renderTemplate( '#main', '/templates/managecontext.mustache', context, function() {
+            renderTemplate( '#main', '/templates/createachievementclass.mustache', { 'context': cachedContext }, function () {
                 $( '#main' ).toggleLoading();
             });
         }
     });
+
+    this.get( '#/Context/:contextId/ManageAchievementClass/:achievementClassId', function () {
+        $( '#main' ).toggleLoading();
+        
+        var contextId = this.params[ 'contextId' ];
+        var cachedContext = g_ContextCache[ contextId ];
+        var achievementClassId = this.params[ 'achievementClassId' ];
+        var cachedAchievementClass = g_AchievementClassCache[ achievementClassId ];
+
+        function gotAchievementClass()
+        {
+            renderTemplate( '#main', '/templates/manageachievementclass.mustache', { 'context': cachedContext, 'class': cachedAchievementClass }, function() {
+                $( '#main' ).toggleLoading(); 
+            });
+        }
+        
+        function gotContext()
+        {
+            if ( !cachedAchievementClass )
+            {
+                $.ajax({
+                    url: apiServer + '/Context/' + contextId + '/AchievementClass/' + achievementClassId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function( achievementClass ) {
+                        g_AchievementClassCache[ achievementClass._id ] = cachedAchievementClass = achievementClass;
+                        gotAchievementClass();
+                    },
+                    error: function( response, status, error ) {
+                        $( '#main' ).toggleLoading();
+                        console.log( error );
+                    }
+                });
+            }
+            else
+            {
+                gotAchievementClass();
+            }
+        }
+        
+        if ( !cachedContext )
+        {
+            $.ajax({
+                url: apiServer + '/Context/' + contextId,
+                type: 'GET',
+                dataType: 'json',
+                success: function( context ) {
+                    g_ContextCache[ context._id ] = cachedContext = context;
+                    gotContext();
+                },
+                error: function( response, status, error ) {
+                    $( '#main' ).toggleLoading();
+                    console.log( error );
+                }
+            });
+        }
+        else
+        {
+            gotContext();
+        }
+    });
+
 });
 
 $(function() {
@@ -510,5 +637,116 @@ $('.reset-context-button').live( 'click', function( event ) {
     {
         $(form).find( '#' + key ).val( context[ key ] );
         $(form).find( '#' + key ).html( context[ key ] );
+    }
+});
+
+$('.button-create-achievementclass').live( 'click', function( event ) {
+    event.preventDefault();
+    var form = $(this).parents( 'form:first' );
+
+    $(form).toggleLoading();
+
+    var contextId = $(form).find( '#contextId' ).val();
+    var name = $(form).find( '#name' ).val();
+    var description = $(form).find( '#description' ).val();
+    
+    $.ajax({
+        url: apiServer + '/Context/' + contextId + '/AchievementClass',
+        type: 'POST',
+        data: JSON.stringify({
+            'name': name,
+            'description': description
+        }),
+        dataType: 'json',
+        contentType: 'application/json',
+        cache: false,
+        success: function( achievementClass ) {
+            $(form).toggleLoading();
+            
+            g_AchievementClassCache[ achievementClass._id ] = achievementClass;
+            g_AchievementClassListCache[ contextId ].push( achievementClass );
+            
+            app.setLocation( '#/Context/' + contextId + '/ManageAchievementClass/' + achievementClass._id );
+        },
+        error: function( response, status, error ) {
+            $(form).toggleLoading();
+            console.log( error );
+        }
+    });
+});
+
+$('.update-achievementclass-button').live( 'click', function( event ) {
+    event.preventDefault();
+    var button = this;
+    var form = $(this).parents( 'form:first' );
+
+    var toBeUpdated = {};
+
+    var contextId = $(form).find( '#contextId' ).val();
+    var achievementClassId = $(form).find( '#id' ).val();
+    var cachedAchievementClass = g_AchievementClassCache[ achievementClassId ];
+    
+    var name = $(form).find( "#name" ).val();
+    if ( name != cachedAchievementClass.name )
+    {
+        toBeUpdated.name = name;
+    }
+    
+    var description = $(form).find( "#description" ).val();
+    if ( description != cachedAchievementClass.description )
+    {
+        toBeUpdated.description = description;
+    }
+    
+    // only send if toBeUpdated has at least one key
+    for ( var key in toBeUpdated )
+    {
+        $(button).button( 'loading' );
+        $(form).toggleLoading();
+
+        $.ajax({
+            url: apiServer + '/Context/' + contextId + '/AchievementClass/' + achievementClassId,
+            type: 'PUT',
+            data: JSON.stringify( toBeUpdated ),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function( achievementClass ) {
+                g_AchievementClassCache[ achievementClass._id ] = achievementClass;
+                $(form).toggleLoading();
+                $(button).button( 'complete' );
+                setTimeout( function() {
+                    $(button).button( 'reset' );
+                }, 2000 );
+            },
+            error: function( response, status, error ) {
+                $(form).toggleLoading();
+                console.log( error );
+                $(button).button( 'reset' );
+            }
+        });
+
+        break; // we break, no matter what, because we just wanted to see if there was a key in toBeUpdated
+    }
+});
+
+$('.reset-achievementclass-button').live( 'click', function( event ) {
+    event.preventDefault();
+    var form = $(this).parents( 'form:first' );
+
+    // TODO: prompt for confirmation, maybe use bootstrap-modal.js?
+    
+    var achievementClassId = $(form).find( '#id' ).val();
+    var cachedAchievementClass = g_AchievementClassCache[ achievementClassId ];
+    
+    if ( !cachedAchievementClass )
+    {
+        console.error( 'AchievementClass should be set.' );
+        return;
+    }
+    
+    for ( var key in cachedAchievementClass )
+    {
+        $(form).find( '#' + key ).val( cachedAchievementClass[ key ] );
+        $(form).find( '#' + key ).html( cachedAchievementClass[ key ] );
     }
 });
