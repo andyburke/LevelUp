@@ -28,7 +28,7 @@ describe( 'Users', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError creating User:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -78,7 +78,7 @@ describe( 'Users', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError creating Session:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -119,7 +119,7 @@ describe( 'Users', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError deleting Session:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -162,7 +162,7 @@ describe( 'Users', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError creating Session:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -204,7 +204,7 @@ describe( 'Users', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError getting uncensored User:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -253,7 +253,7 @@ describe( 'Users', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError getting censored User:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -305,7 +305,7 @@ describe( 'Users', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError updating User:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -349,216 +349,6 @@ describe( 'Users', function() {
     });
 });
 
-var organization = null;
-var testOrganizationData = utils.getOrganizationData( 'test' );
-var updatedOrganizationData = utils.getOrganizationData( 'updated' );
-
-describe( 'Organizations', function() {
-
-    it( 'should Create Organization', function () {
-        var error = false;
-        
-        shred.post({
-          url: utils.levelUpUrl + '/Organization',
-          headers: {
-            content_type: 'application/json',
-            accept: 'application/json'
-          },
-          content: testOrganizationData,
-          on: {
-            response: function( response ) {
-                organization = response.content.data;
-            },
-            error: function( response ) {
-                if ( utils.debug )
-                {
-                    console.log( "\nError creating Organization:\n" );
-                    console.log( response.content.data )
-                    console.log( "\n" );
-                }
-                error = true;
-            }
-          }
-        });
-        
-        waitsFor( function() {
-            return error || organization;
-        }, "Create Organization timed out", 10000 );
-        
-        runs( function () {
-            if ( utils.debug )
-            {
-                console.log( "\nCreated organization:\n" );
-                console.log( JSON.stringify( organization, null, 4 ) );
-                console.log( "\n" );
-            }
-
-            expect( organization ).not.toBeNull();
-            expect( organization.name ).toEqual( testOrganizationData.name );
-            expect( organization.description ).toEqual( testOrganizationData.description );
-            expect( organization.url ).toEqual( testOrganizationData.url );
-            expect( organization.apiSecret ).not.toBeUndefined();
-            expect( organization._id ).not.toBeUndefined();
-            expect( organization.updatedAt ).not.toBeUndefined();
-        });
-    });
-
-    it( 'should Get uncensored Organization', function () {
-        var error = false;
-        var result = null;
-        
-        shred.get({
-          url: utils.levelUpUrl + '/Organization/' + organization._id,
-          headers: {
-            accept: 'application/json',
-            authorization: utils.authString( testOrganizationData )
-          },
-          on: {
-            response: function( response ) {
-                result = response.content.data;
-            },
-            error: function( response ) {
-                if ( utils.debug )
-                {
-                    console.log( "\nError getting uncensored Organization:\n" );
-                    console.log( response.content.data );
-                    console.log( "\n" );
-                }
-                error = true;
-            }
-          }
-        });
-        
-        waitsFor( function() {
-            return error || result;
-        }, "Get uncensored Organization timed out", 10000 );
-        
-        runs( function () {
-            if ( utils.debug )
-            {
-                console.log( "\nGot uncensored organization:\n" );
-                console.log( JSON.stringify( result, null, 4 ) );
-                console.log( "\n" );
-            }
-
-            expect( result ).not.toBeNull();
-            expect( result.name ).toEqual( testOrganizationData.name );
-            expect( result.description ).toEqual( testOrganizationData.description );
-            expect( result.url ).toEqual( testOrganizationData.url );
-            expect( result.apiSecret ).not.toBeUndefined();
-            expect( result._id ).not.toBeUndefined();
-            expect( result.updatedAt ).not.toBeUndefined();
-        });
-    });
-
-    it( 'should Get censored Organization', function () {
-        var error = false;
-        var result = null;
-        
-        shred.get({
-          url: utils.levelUpUrl + '/Organization/' + organization._id,
-          headers: {
-            accept: 'application/json'
-          },
-          cookieJar: null,
-          on: {
-            response: function( response ) {
-                result = response.content.data;
-            },
-            error: function( response ) {
-                if ( utils.debug )
-                {
-                    console.log( "\nError getting censored Organization:\n" );
-                    console.log( response.content.data )
-                    console.log( "\n" );
-                }
-                error = true;
-            }
-          }
-        });
-        
-        waitsFor( function() {
-            return error || result;
-        }, "Get censored Organization timed out", 10000 );
-        
-        runs( function () {
-            if ( utils.debug )
-            {
-                console.log( "\nGot censored organization:\n" );
-                console.log( JSON.stringify( result, null, 4 ) );
-                console.log( "\n" );
-            }
-
-            expect( result ).not.toBeNull();
-            expect( result.apiSecret ).toBeUndefined();
-            expect( result.name ).toEqual( organization.name );
-            expect( result.description ).toEqual( organization.description );
-            expect( result.url ).toEqual( organization.url );
-            expect( result._id ).toEqual( organization._id );
-            expect( result.updatedAt ).toEqual( organization.updatedAt );
-        });
-    });    
-
-    it( 'should Update Organization', function () {
-        var error = false;
-        var updatedOrganization = null;
-        
-        shred.put({
-          url: utils.levelUpUrl + '/Organization/' + organization._id,
-          headers: {
-            content_type: 'application/json',
-            accept: 'application/json',
-            authorization: utils.authString( testOrganizationData )
-          },
-          content: updatedOrganizationData,
-          on: {
-            response: function( response ) {
-                updatedOrganization = response.content.data;
-            },
-            error: function( response ) {
-                if ( utils.debug )
-                {
-                    console.log( "\nError updating Organization:\n" );
-                    console.log( response.content.data )
-                    console.log( "\n" );
-                }
-                error = true;
-            }
-          }
-        });
-        
-        waitsFor( function() {
-            return error || updatedOrganization;
-        }, "Update Organization timed out", 10000 );
-        
-        runs( function () {
-            if ( utils.debug )
-            {
-                console.log( "\nGot updated organization:\n" );
-                console.log( JSON.stringify( updatedOrganization, null, 4 ) );
-                console.log( "\n" );
-            }
-
-            expect( updatedOrganization ).not.toBeNull();
-            expect( updatedOrganization.name ).toEqual( updatedOrganizationData.name );
-            expect( updatedOrganization.description ).toEqual( updatedOrganizationData.description );
-            expect( updatedOrganization.url ).toEqual( updatedOrganizationData.url );
-            expect( updatedOrganization.apiSecret ).not.toBeUndefined();
-            expect( updatedOrganization._id ).not.toBeUndefined();
-            expect( updatedOrganization.updatedAt ).not.toBeUndefined();
-            
-            expect( updatedOrganization.name ).not.toEqual( organization.name );
-            expect( updatedOrganization.description ).not.toEqual( organization.description );
-            expect( updatedOrganization.url ).not.toEqual( organization.url );
-            expect( updatedOrganization.apiSecret ).not.toEqual( organization.apiSecret );
-            expect( updatedOrganization._id ).toEqual( organization._id ); // ensure id did not change
-            expect( updatedOrganization.updatedAt ).not.toEqual( organization.updatedAt );
-            
-            organization = updatedOrganization;
-        });
-    });
-});
-
 var context = null;
 
 describe( 'Contexts', function() {
@@ -570,11 +360,11 @@ describe( 'Contexts', function() {
         var error = false;
         
         shred.post({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context',
+          url: utils.levelUpUrl + '/Context',
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
-            authorization: utils.authString( updatedOrganizationData )
+            authorization: utils.authString( user )
           },
           content: contextData,
           on: {
@@ -585,7 +375,7 @@ describe( 'Contexts', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError creating Context:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -620,7 +410,7 @@ describe( 'Contexts', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id,
+          url: utils.levelUpUrl + '/Context/' + context._id,
           headers: {
             accept: 'application/json'
           },
@@ -632,7 +422,7 @@ describe( 'Contexts', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError getting Context:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -667,11 +457,11 @@ describe( 'Contexts', function() {
         var updatedContext = null;
         
         shred.put({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id,
+          url: utils.levelUpUrl + '/Context/' + context._id,
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
-            authorization: utils.authString( updatedOrganizationData )
+            authorization: utils.authString( user )
           },
           content: updatedContextData,
           on: {
@@ -682,7 +472,7 @@ describe( 'Contexts', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError updating Context:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -692,7 +482,7 @@ describe( 'Contexts', function() {
         
         waitsFor( function() {
             return error || updatedContext;
-        }, "Update Organization timed out", 10000 );
+        }, "Update Context timed out", 10000 );
         
         runs( function () {
             if ( utils.debug )
@@ -726,7 +516,7 @@ describe( 'Contexts', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Contexts',
+          url: utils.levelUpUrl + '/Contexts',
           headers: {
             accept: 'application/json'
           },
@@ -738,7 +528,7 @@ describe( 'Contexts', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError getting Context list:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -791,11 +581,11 @@ describe( 'AchievementClasses', function() {
         var error = false;
         
         shred.post({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id + '/AchievementClass',
+          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass',
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
-            authorization: utils.authString( updatedOrganizationData )
+            authorization: utils.authString( user )
           },
           content: achievementClassData,
           on: {
@@ -806,7 +596,7 @@ describe( 'AchievementClasses', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError creating AchievementClass:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -832,7 +622,6 @@ describe( 'AchievementClasses', function() {
             expect( achievementClass.image ).toEqual( achievementClassData.image );
             expect( achievementClass.points ).toEqual( achievementClassData.points );
             expect( achievementClass._id ).not.toBeUndefined();
-            expect( achievementClass.organizationId ).not.toBeUndefined();
             expect( achievementClass.contextId ).toEqual( context._id );
             expect( achievementClass.updatedAt ).not.toBeUndefined();
         });
@@ -843,7 +632,7 @@ describe( 'AchievementClasses', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
+          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
           headers: {
             accept: 'application/json'
           },
@@ -855,7 +644,7 @@ describe( 'AchievementClasses', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError getting AchievementClass:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -881,7 +670,6 @@ describe( 'AchievementClasses', function() {
             expect( result.image ).toEqual( achievementClass.image );
             expect( result.points ).toEqual( achievementClass.points );
             expect( result._id ).not.toBeUndefined();
-            expect( result.organizationId ).toEqual( achievementClass.organizationId );
             expect( result.contextId ).toEqual( achievementClass.contextId );
             expect( result.updatedAt ).toEqual( achievementClass.updatedAt );
         });
@@ -892,11 +680,11 @@ describe( 'AchievementClasses', function() {
         var updatedAchievementClass = null;
         
         shred.put({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
+          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
-            authorization: utils.authString( updatedOrganizationData )
+            authorization: utils.authString( user )
           },
           content: updatedAchievementClassData,
           on: {
@@ -907,7 +695,7 @@ describe( 'AchievementClasses', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError updating AchievementClass:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -950,7 +738,7 @@ describe( 'AchievementClasses', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id + '/AchievementClasses',
+          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClasses',
           headers: {
             accept: 'application/json'
           },
@@ -962,7 +750,7 @@ describe( 'AchievementClasses', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError getting AchievementClass list:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -990,7 +778,6 @@ describe( 'AchievementClasses', function() {
             expect( result[ 0 ].image ).toEqual( achievementClass.image );
             expect( result[ 0 ].points ).toEqual( achievementClass.points );
             expect( result[ 0 ]._id ).toEqual( achievementClass._id );
-            expect( result[ 0 ].organizationId ).toEqual( achievementClass.organizationId );
             expect( result[ 0 ].contextId ).toEqual( achievementClass.contextId );
             expect( result[ 0 ].updatedAt ).toEqual( achievementClass.updatedAt );
         });
@@ -1016,16 +803,15 @@ describe( 'Achievements', function() {
         var error = false;
         
         shred.post({
-          url: utils.levelUpUrl + '/Achievement',
+          url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement',
           headers: {
             content_type: 'application/json',
             accept: 'application/json'
           },
           content: {
-            apiKey: organization._id,
-            apiSecret: organization.apiSecret,
+            apiKey: user._id,
+            apiSecret: user.apiSecret,
             userHash: utils.userHash( user ),
-            contextId: context._id,
             classId: achievementClass._id
           },
           on: {
@@ -1036,7 +822,7 @@ describe( 'Achievements', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError creating Achievement:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -1059,7 +845,6 @@ describe( 'Achievements', function() {
             expect( achievement ).not.toBeNull();
             expect( achievement._id ).not.toBeUndefined();
             expect( achievement.contextId ).toEqual( context._id );
-            expect( achievement.organizationId ).toEqual( organization._id );
             expect( achievement.classId ).toEqual( achievementClass._id );
             expect( achievement.updatedAt ).not.toBeUndefined();
         });
@@ -1075,7 +860,7 @@ describe( 'Achievements', function() {
 
         runs( function() {
             shred.get({
-              url: utils.levelUpUrl + '/Achievements/' + utils.userHash( user ),
+              url: utils.levelUpUrl + '/User/' + utils.userHash( user ) + '/Achievements',
               headers: {
                 accept: 'application/json'
               },
@@ -1087,7 +872,7 @@ describe( 'Achievements', function() {
                     if ( utils.debug )
                     {
                         console.log( "\nError getting Achievement list:\n" );
-                        console.log( response.content.data )
+                        console.log( response.content.body );
                         console.log( "\n" );
                     }
                     error = true;
@@ -1111,7 +896,6 @@ describe( 'Achievements', function() {
             expect( result ).not.toBeNull();
             expect( result.length ).toEqual( 1 );
             expect( result[ 0 ].classId ).toEqual( achievement.classId );
-            expect( result[ 0 ].organizationId ).toEqual( achievement.organizationId );
             expect( result[ 0 ].contextId ).toEqual( achievement.contextId );
 
             checkedAchievementList = true;
@@ -1128,15 +912,15 @@ describe( 'Achievements', function() {
 
         runs( function() {
             shred.delete({
-              url: utils.levelUpUrl + '/Achievement/' + achievement._id,
+              url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement/' + achievement._id,
               headers: {
                 content_type: 'application/json',
                 accept: 'application/json',
-                authorization: utils.authString( updatedOrganizationData )
+                authorization: utils.authString( user )
               },
               content: {
-                apiKey: organization._id,
-                apiSecret: organization.apiSecret
+                apiKey: user._id,
+                apiSecret: user.apiSecret
               },
               on: {
                 response: function( response ) {
@@ -1147,7 +931,7 @@ describe( 'Achievements', function() {
                     if ( utils.debug )
                     {
                         console.log( "\nError deleting Achievement:\n" );
-                        console.log( response.content.data )
+                        console.log( response.content.body );
                         console.log( "\n" );
                     }
                     error = true;
@@ -1172,140 +956,25 @@ describe( 'Achievements', function() {
         });
     });        
 
-    it( 'should Create Achievement using context name', function () {
-        var error = false;
-        
-        waitsFor( function () {
-            return deletedAchievement;            
-        }, 'Creating/Deleting achievement timed out', 30000 );
-        
-        runs( function() {
-            shred.post({
-              url: utils.levelUpUrl + '/Achievement',
-              headers: {
-                content_type: 'application/json',
-                accept: 'application/json',
-                authorization: utils.authString( updatedOrganizationData )
-              },
-              content: {
-                apiKey: organization._id,
-                apiSecret: organization.apiSecret,
-                userHash: utils.userHash( user ),
-                context: context.name,
-                classId: achievementClass._id
-              },
-              on: {
-                response: function( response ) {
-                    achievementByContextName = response.content.data;
-                },
-                error: function( response ) {
-                    if ( utils.debug )
-                    {
-                        console.log( "\nError creating Achievement by context name:\n" );
-                        console.log( response.content.data )
-                        console.log( "\n" );
-                    }
-                    error = true;
-                }
-              }
-            });
-        });
-        
-        waitsFor( function() {
-            return error || achievementByContextName;
-        }, "Create Achievement by context name timed out", 10000 );
-        
-        runs( function () {
-            if ( utils.debug )
-            {
-                console.log( "\nCreated Achievement using context name:\n" );
-                console.log( JSON.stringify( achievementByContextName, null, 4 ) );
-                console.log( "\n" );
-            }
-
-            expect( achievementByContextName ).not.toBeNull();
-            expect( achievementByContextName._id ).not.toBeUndefined();
-            expect( achievementByContextName.contextId ).toEqual( context._id );
-            expect( achievementByContextName.organizationId ).toEqual( organization._id );
-            expect( achievementByContextName.classId ).toEqual( achievementClass._id );
-            expect( achievementByContextName.updatedAt ).not.toBeUndefined();
-        });
-    });
-    
-    it( 'should Delete Achievement by context name', function () {
-        var error = false;
-        var result = null;
-        
-        waitsFor( function() {
-            return achievementByContextName; 
-        }, 'Achievement by context name creation took too long.', 30000 );
-
-        runs( function() {
-            shred.delete({
-              url: utils.levelUpUrl + '/Achievement/' + achievementByContextName._id,
-              headers: {
-                content_type: 'application/json',
-                accept: 'application/json',
-                authorization: utils.authString( updatedOrganizationData )
-              },
-              content: {
-                apiKey: organization._id,
-                apiSecret: organization.apiSecret                
-              },
-              on: {
-                response: function( response ) {
-                    result = response.content.data;
-                    deletedAchievementByContextName = true;
-                },
-                error: function( response ) {
-                    if ( utils.debug )
-                    {
-                        console.log( "\nError deleting Achievement by context name:\n" );
-                        console.log( response.content.data )
-                        console.log( "\n" );
-                    }
-                    error = true;
-                }
-              }
-            });
-        });
-        
-        waitsFor( function() {
-            return error || result;
-        }, "Delete Achievement by context name timed out", 10000 );
-        
-        runs( function () {
-            if ( utils.debug )
-            {
-                console.log( "\nDeleted Achievement by context name:\n" );
-                console.log( JSON.stringify( result, null, 4 ) );
-                console.log( "\n" );
-            }
-
-            expect( result ).not.toBeNull();
-        });
-    });
-
     it( 'should Create Achievement using class name', function () {
         var error = false;
         
         waitsFor( function () {
-            return deletedAchievementByContextName;            
-        }, 'Creating/Deleting achievement by context name timed out', 30000 );
+            return deletedAchievement;            
+        }, 'Deleting achievement timed out', 30000 );
         
         runs( function() {
             shred.post({
-              url: utils.levelUpUrl + '/Achievement',
+              url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement',
               headers: {
                 content_type: 'application/json',
                 accept: 'application/json',
-                authorization: utils.authString( updatedOrganizationData )
+                authorization: utils.authString( user )
               },
               content: {
-                apiKey: organization._id,
-                apiSecret: organization.apiSecret,
+                apiKey: user._id,
+                apiSecret: user.apiSecret,
                 userHash: utils.userHash( user ),
-                contextId: context._id,
                 class: achievementClass.name
               },
               on: {
@@ -1316,7 +985,7 @@ describe( 'Achievements', function() {
                     if ( utils.debug )
                     {
                         console.log( "\nError creating Achievement by class name:\n" );
-                        console.log( response.content.data )
+                        console.log( response.content.body );
                         console.log( "\n" );
                     }
                     error = true;
@@ -1340,7 +1009,6 @@ describe( 'Achievements', function() {
             expect( achievementByClassName ).not.toBeNull();
             expect( achievementByClassName._id ).not.toBeUndefined();
             expect( achievementByClassName.contextId ).toEqual( context._id );
-            expect( achievementByClassName.organizationId ).toEqual( organization._id );
             expect( achievementByClassName.classId ).toEqual( achievementClass._id );
             expect( achievementByClassName.updatedAt ).not.toBeUndefined();
         });
@@ -1356,15 +1024,14 @@ describe( 'Achievements', function() {
 
         runs( function() {
             shred.delete({
-              url: utils.levelUpUrl + '/Achievement/' + achievementByClassName._id,
+              url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement/' + achievementByClassName._id,
               headers: {
                 content_type: 'application/json',
-                accept: 'application/json',
-                authorization: utils.authString( updatedOrganizationData )
+                accept: 'application/json'
               },
               content: {
-                apiKey: organization._id,
-                apiSecret: organization.apiSecret                
+                apiKey: user._id,
+                apiSecret: user.apiSecret                
               },
               on: {
                 response: function( response ) {
@@ -1375,7 +1042,7 @@ describe( 'Achievements', function() {
                     if ( utils.debug )
                     {
                         console.log( "\nError deleting Achievement by class name:\n" );
-                        console.log( response.content.data )
+                        console.log( response.content.body );
                         console.log( "\n" );
                     }
                     error = true;
@@ -1408,10 +1075,10 @@ describe( 'Cleanup', function() {
         var error = false;
         
         shred.delete({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
+          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
           headers: {
             accept: 'application/json',
-            authorization: utils.authString( updatedOrganizationData )
+            authorization: utils.authString( user )
           },
           on: {
             response: function( response ) {
@@ -1421,7 +1088,7 @@ describe( 'Cleanup', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError deleting AchievementClass:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -1450,10 +1117,10 @@ describe( 'Cleanup', function() {
         var error = false;
         
         shred.delete({
-          url: utils.levelUpUrl + '/Organization/' + organization._id + '/Context/' + context._id,
+          url: utils.levelUpUrl + '/Context/' + context._id,
           headers: {
             accept: 'application/json',
-            authorization: utils.authString( updatedOrganizationData )
+            authorization: utils.authString( user )
           },
           on: {
             response: function( response ) {
@@ -1463,7 +1130,7 @@ describe( 'Cleanup', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError deleting Context:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;
@@ -1479,48 +1146,6 @@ describe( 'Cleanup', function() {
             if ( utils.debug )
             {
                 console.log( "\nGot delete Context result:\n" );
-                console.log( JSON.stringify( result, null, 4 ) );
-                console.log( "\n" );
-            }
-            
-            expect( result ).not.toBeNull();
-        });
-    });
-   
-    it( 'should Delete Organization', function () {
-        var result = null;        
-        var error = false;
-        
-        shred.delete({
-          url: utils.levelUpUrl + '/Organization/' + organization._id,
-          headers: {
-            accept: 'application/json',
-            authorization: utils.authString( updatedOrganizationData )
-          },
-          on: {
-            response: function( response ) {
-                result = response.content.data;
-            },
-            error: function( response ) {
-                if ( utils.debug )
-                {
-                    console.log( "\nError deleting Organization:\n" );
-                    console.log( response.content.data )
-                    console.log( "\n" );
-                }
-                error = true;
-            }
-          }
-        });
-        
-        waitsFor( function() {
-            return error || result;
-        }, "Delete Organization timed out", 10000 );
-        
-        runs( function () {
-            if ( utils.debug )
-            {
-                console.log( "\nGot delete Organization result:\n" );
                 console.log( JSON.stringify( result, null, 4 ) );
                 console.log( "\n" );
             }
@@ -1546,7 +1171,7 @@ describe( 'Cleanup', function() {
                 if ( utils.debug )
                 {
                     console.log( "\nError deleting User:\n" );
-                    console.log( response.content.data )
+                    console.log( response.content.body );
                     console.log( "\n" );
                 }
                 error = true;

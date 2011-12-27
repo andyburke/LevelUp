@@ -9,15 +9,6 @@ exports.authString = function( data )
     return 'Basic ' + new Buffer( data.email + ':' + data.password ).toString( 'base64' );
 }
 
-exports.getOrganizationData = function( organizationName )
-{
-    return {
-        name: organizationName,
-        description: 'This is the ' + organizationName + ' organization!',
-        url: 'http://' + organizationName + '.com'
-    };
-}
-
 exports.getContextData = function( contextName )
 {
     return {

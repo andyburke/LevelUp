@@ -31,7 +31,6 @@ var apiModules = [
     require( './api/Sessions.js' ),
     require( './api/Users.js' ),
     require( './api/Contexts.js' ),
-    require( './api/Organizations.js' ),
     require( './api/AchievementClasses.js' ),
     require( './api/Achievements.js' )
 ];

@@ -6,7 +6,8 @@ var md5 = require( 'MD5' );
 
 var censoredFields = {
     'email': true,
-    'passwordHash': true
+    'passwordHash': true,
+    'apiSecret': true
 };
 
 exports.bindToApp = function( app ) {
@@ -38,7 +39,8 @@ exports.bindToApp = function( app ) {
             newUser.nickname = request.param( 'nickname' ) ? request.param( 'nickname' ) : '';
             newUser.bio = request.param( 'bio' ) ? request.param( 'bio' ) : '';
             newUser.location = request.param( 'location' ) ? request.param( 'location' ) : '';
-
+            newUser.updateApiSecret();
+            
             newUser.save( function( saveError ) {
                 if ( saveError )
                 {
@@ -65,6 +67,7 @@ exports.bindToApp = function( app ) {
                 user.nickname = request.param( 'nickname' ) ? request.param( 'nickname' ) : user.nickname;
                 user.bio = request.param( 'bio' ) ? request.param( 'bio' ) : user.bio;
                 user.location = request.param( 'location' ) ? request.param( 'location' ) : user.location;
+                user.updateApiSecret();
 
                 user.save( function( saveError ) {
                     if ( saveError )
@@ -141,7 +144,7 @@ exports.bindToApp = function( app ) {
                 return;
             }
             
-            response.json( user.censored( { 'email': true, 'passwordHash': true } ) );
+            response.json( user.censored( { 'email': true, 'passwordHash': true, 'apiSecret': true } ) );
         });
     });
     

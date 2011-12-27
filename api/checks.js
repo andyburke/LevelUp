@@ -13,99 +13,70 @@ exports.user = function( request, response, next )
     next();
 }
 
-exports.organizationAuth = function( request, response, next )
-{
+exports.ownsContext = function( request, response, next ) {
     var apiSecret = request.param( 'apiSecret' );
-    var apiKey = request.param( 'organizationId' ) || request.param( 'apiKey' );
+    var apiKey = request.param( 'apiKey' );
 
-    if ( !apiKey )
+    function foundUser( user )
     {
-        response.json( 'You must specify an apiKey or use a properly formatted organization url.', 400 );
-        return;
-    }
-    
-    models.Organization.findById( apiKey, function( error, organization ) {
-        if ( error )
-        {
-            response.json( error, 500 );
-            return;
-        }
-
-        if ( !organization )
-        {
-            response.json( 'Could not locate an organization with id: ' + apiKey, 404 );
-            return;
-        }
-
-        if ( apiSecret )
-        {
-            if ( organization.apiSecret == apiSecret )
+        models.Context.findById( request.params.contextId, function( error, context ) {
+            if ( error )
             {
-                request.organization = organization;
-                next();
-            }
-            else
-            {
-                response.json( 'Invalid apiSecret.', 403 );
-                return;
-            }
-        }
-        else
-        {
-            if ( !request.session.user )
-            {
-                response.json( 'You must have a valid session if you want to access an organization without using your apiSecret.', 403 );
-                return;
-            }
-
-            if ( organization.ownerIds.indexOf( request.session.user._id ) != -1 )
-            {
-                request.organization = organization;
-                next();
+                response.json( error, 500 );
                 return;
             }
             
-            response.json( 'You are not an owner for this organization.', 403 );
+            if ( !context )
+            {
+                response.json( 'No context for id: ' + request.params.contextId, 404 );
+                return;
+            }
+            
+            if ( context.ownerIds.indexOf( user._id ) != -1 )
+            {
+                request.context = context;
+                next();
+                return;
+            }
+    
+            response.json( 'You are not authorized to access this resource.', 403 );
             return;
-        }
-    });
-}
-
-exports.ownsContext = function( request, response, next ) {
-    if ( !request.organization )
+        });
+    }
+    
+    if ( request.session.user )
     {
-        response.json( 'Internal server error: organization is not set.', 500 );
+        foundUser( request.session.user );
         return;
     }
     
-    models.Context.findById( request.params.contextId, function( error, context ) {
+    models.User.findById( apiKey, function( error, user ) {
         if ( error )
         {
-            response.json( error, 500 );
+            request.json( error, 500 );
             return;
         }
         
-        if ( !context )
+        if ( !user )
         {
-            response.json( 'No context for id: ' + request.params.contextId, 404 );
-            return;
-        }
-        
-        if ( !context.organizationId.equals( request.organization._id ) )
-        {
-            response.json( 'You do not own this context.', 403 );
+            request.json( 'Could not find a user with key: ' + apiKey, 404 );
             return;
         }
 
-        request.context = context;
-        next();
+        if ( user.apiSecret != apiSecret )
+        {
+            request.json( 'Invalid apiSecret.', 403 );
+            return;
+        }
+        
+        foundUser( user );
     });
 }
 
 exports.ownsAchievementClass = function( request, response, next ) {
-    if ( !request.organization )
+    if ( !request.context )
     {
-        response.json( 'Internal server error: organization is not set.', 500 );
+        response.json( 'Internal server error: context is not set.', 500 );
         return;
     }
     
@@ -122,7 +93,7 @@ exports.ownsAchievementClass = function( request, response, next ) {
             return;
         }
         
-        if ( !achievementClass.organizationId.equals( request.organization._id ) )
+        if ( !achievementClass.contextId.equals( request.context._id ) )
         {
             response.json( 'You do not own this context.', 403 );
             return;

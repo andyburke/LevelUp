@@ -3,20 +3,14 @@ var checks = require( './checks.js' );
 
 exports.bindToApp = function( app ) {
     
-    app.post( '/Achievement', checks.organizationAuth, function( request, response ) {
+    app.post( '/Context/:contextId/Achievement', checks.ownsContext, function( request, response ) {
         var newAchievement = new models.Achievement();
+        newAchievement.contextId = request.context._id;
         newAchievement.userHash = request.param( 'userHash' );
-        newAchievement.organizationId = request.organization._id;
-        newAchievement.contextId = request.param( 'contextId' );
         newAchievement.classId = request.param( 'classId' );
         
         function save()
         {
-            if ( !newAchievement.contextId || !newAchievement.classId )
-            {
-                return; // not ready to save yet
-            }
-            
             models.Achievement.findOne( { 'userHash': newAchievement.userHash, 'classId': newAchievement.classId }, function( error, achievement ) {
                 if ( error )
                 {
@@ -42,41 +36,11 @@ exports.bindToApp = function( app ) {
             });
         }
         
-        if ( newAchievement.contextId && newAchievement.classId )
+        if ( newAchievement.classId )
         {
             save();
-            return;
         }
-        
-        if ( !newAchievement.contextId )
-        {
-            var contextName = request.param( 'context' );
-            
-            if ( !contextName )
-            {
-                response.json( 'You must specify a contextId or context name when creating an achievement.', 400 );
-                return;
-            }
-            
-            models.Context.findOne( { 'organizationId': request.organization._id, 'name': contextName }, function( error, context ) {
-                if ( error )
-                {
-                    response.json( error, 500 );
-                    return;
-                }
-                
-                if ( !context )
-                {
-                    response.json( 'Could not find a context named: ' + contextName, 404 );
-                    return;
-                }
-                
-                newAchievement.contextId = context._id;
-                save();
-            });
-        }
-        
-        if ( !newAchievement.classId )
+        else
         {
             var achievementClassName = request.param( 'class' );
             
@@ -86,7 +50,7 @@ exports.bindToApp = function( app ) {
                 return;
             }
             
-            models.AchievementClass.findOne( { 'organizationId': request.organization._id, 'name': achievementClassName }, function( error, achievementClass ) {
+            models.AchievementClass.findOne( { 'contextId': request.context._id, 'name': achievementClassName }, function( error, achievementClass ) {
                 if ( error )
                 {
                     response.json( error, 500 );
@@ -105,7 +69,39 @@ exports.bindToApp = function( app ) {
         }
     });
     
-    app.get( '/Achievements/:userHash/:contextId?', function( request, response ) {
+    app.del( '/Context/:contextId/Achievement/:achievementId', checks.ownsContext, function( request, response ) {
+        models.Achievement.findById( request.params.achievementId, function( error, achievement ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            if ( !achievement )
+            {
+                response.json( 'Could not locate an achievement with id: ' + request.params.achievementId, 404 );
+                return;
+            }
+            
+            if ( !achievement.contextId.equals( request.context._id ) )
+            {
+                response.json( 'You do not own this achievement.', 403 );
+                return;
+            }
+            
+            achievement.remove( function( removeError ) {
+                if ( removeError )
+                {
+                    response.json( removeError, 500 );
+                    return;
+                }
+                
+                response.json( { 'removed': true } );
+            });
+        });
+    });
+    
+    app.get( '/User/:userHash/Achievements/:contextId?', function( request, response ) {
         var criteria = { 'userHash': request.params.userHash };
         
         if ( request.params.contextId )
@@ -124,7 +120,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/AchievementStream/:userHash/:contextId?', function( request, response ) {
+    app.get( '/User/:userHash/AchievementStream/:contextId?', function( request, response ) {
         var criteria = { 'userHash': request.params.userHash };
         if ( request.params.contextId )
         {
@@ -146,38 +142,6 @@ exports.bindToApp = function( app ) {
         
         stream.on('close', function () {
             response.end();
-        });
-    });
-    
-    app.del( '/Achievement/:achievementId', checks.organizationAuth, function( request, response ) {
-        models.Achievement.findById( request.params.achievementId, function( error, achievement ) {
-            if ( error )
-            {
-                response.json( error, 500 );
-                return;
-            }
-            
-            if ( !achievement )
-            {
-                response.json( 'Could not locate an achievement with id: ' + request.params.achievementId, 404 );
-                return;
-            }
-            
-            if ( !achievement.organizationId.equals( request.organization._id ) )
-            {
-                response.json( 'Your organization does not own this achievement.', 403 );
-                return;
-            }
-            
-            achievement.remove( function( removeError ) {
-                if ( removeError )
-                {
-                    response.json( removeError, 500 );
-                    return;
-                }
-                
-                response.json( { 'removed': true } );
-            });
         });
     });
 }

@@ -2,10 +2,10 @@ var models = require( './models.js' );
 var checks = require( './checks.js' );
 
 exports.bindToApp = function( app ) {
-    app.post( '/Organization/:organizationId/Context', checks.organizationAuth, function( request, response ) {
+    app.post( '/Context', checks.user, function( request, response ) {
         
         var newContext = new models.Context();
-        newContext.organizationId = request.organization._id;
+        newContext.ownerIds = [ request.session.user._id ];
         newContext.name = request.param( 'name' );
         newContext.description = request.param( 'description' );
         newContext.image = request.param( 'image' );
@@ -22,12 +22,13 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.put( '/Organization/:organizationId/Context/:contextId', checks.organizationAuth, checks.ownsContext, function( request, response ) {
+    app.put( '/Context/:contextId', checks.ownsContext, function( request, response ) {
         request.context.name = request.param( 'name' ) ? request.param( 'name' ) : request.context.name;
         request.context.description = request.param( 'description' ) ? request.param( 'description' ) : request.context.description;
         request.context.image = request.param( 'image' ) ? request.param( 'image' ) : request.context.image;
         request.context.url = request.param( 'url' ) ? request.param( 'url' ) : request.context.url;
-    
+        request.context.ownerIds = request.param( 'ownerIds' ) ? request.param( 'ownerIds' ) : request.context.ownerIds;
+        
         request.context.save( function( error ) {
             if ( error )
             {
@@ -39,7 +40,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/Organization/:organizationId/Context/:contextId', function( request, response ) {
+    app.get( '/Context/:contextId', function( request, response ) {
         models.Context.findById( request.params.contextId, function( error, context ) {
             if ( error )
             {
@@ -57,7 +58,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/Organization/:organizationId/Context/:contextId', checks.organizationAuth, checks.ownsContext, function( request, response ) {
+    app.del( '/Context/:contextId', checks.ownsContext, function( request, response ) {
         request.context.remove( function( error ) {
             if ( error )
             {
@@ -69,8 +70,8 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/Organization/:organizationId/Contexts', function( request, response ) {
-        models.Context.find( { 'organizationId': request.params.organizationId }, function( error, contexts ) {
+    app.get( '/Contexts', checks.user, function( request, response ) {
+        models.Context.find( { 'ownerIds': request.session.user._id }, function( error, contexts ) {
             if ( error )
             {
                 response.json( error, 500 );
