@@ -1,17 +1,29 @@
-<table class="zebra-striped">
-    <tr>
-        <th>Context</th>
-        <th>URL</th>
-        <th>Description</th>
-    </tr>
-    {{#contexts}}
-        <tr>
-            <td><a href="#/ManageContext/{{_id}}">{{name}}</a></td>
-            <td>{{url}}</td>
-            <td>{{description}}</td>
-        </tr>
-    {{/contexts}}
-</table>
-<div class="pull-right">
-    <a href="#/CreateContext">Create New</a>
+<div class="page-header">
+    <h1>Manage Contexts</h1>
+</div>
+<div class="row">
+    <div class="span10">
+        <table class="zebra-striped">
+            <tr>
+                <th>Context</th>
+                <th>URL</th>
+                <th>Description</th>
+            </tr>
+            {{#contexts}}
+                <tr>
+                    <td><a href="#/ManageContext/{{_id}}">{{name}}</a></td>
+                    <td>{{url}}</td>
+                    <td>{{description}}</td>
+                </tr>
+            {{/contexts}}
+        </table>
+        <div class="pull-right">
+            <a href="#/CreateContext">Create New</a>
+        </div>
+    </div>
+    <div class="span4">
+        Contexts are how you manage your different AchievementClasses.  You should
+        create a context for each game, website, or what-have-you that you want to
+        enable achievements for.
+    </div>
 </div>
