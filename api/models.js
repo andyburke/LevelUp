@@ -24,7 +24,7 @@ exports.ContextSchema = new mongoose.Schema({
     description: { type: String },
     image: { type: String },
     url: { type: String },
-    ownerIds: { type: Array, index: true }
+    owners: { type: Array, index: true }
 });
 exports.ContextSchema.plugin( UseTimestamps );
 exports.Context = mongoose.model( 'Context', exports.ContextSchema );

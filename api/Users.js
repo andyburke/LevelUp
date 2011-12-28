@@ -61,14 +61,21 @@ exports.bindToApp = function( app ) {
         function save()
         {
             models.User.findById( request.session.user._id, function( error, user ) {
-                user.email = request.param( 'email' ) ? request.param( 'email' ).toLowerCase() : user.email;
+                user.email = request.param( 'email' ) != undefined ? request.param( 'email' ).toLowerCase() : user.email;
+                
+                if ( !user.email || user.email.length == 0 )
+                {
+                    response.json( 'You must specify a valid email addres.', 400 );
+                    return;
+                }
+                
                 user.hash = md5( user.email );        
-                user.passwordHash = request.param( 'password' ) ? sha1( request.param( 'password' ) ) : user.passwordHash;
-                user.nickname = request.param( 'nickname' ) ? request.param( 'nickname' ) : user.nickname;
-                user.bio = request.param( 'bio' ) ? request.param( 'bio' ) : user.bio;
-                user.location = request.param( 'location' ) ? request.param( 'location' ) : user.location;
+                user.passwordHash = request.param( 'password' ) != undefined ? sha1( request.param( 'password' ) ) : user.passwordHash;
+                user.nickname = request.param( 'nickname' ) != undefined ? request.param( 'nickname' ) : user.nickname;
+                user.bio = request.param( 'bio' ) != undefined ? request.param( 'bio' ) : user.bio;
+                user.location = request.param( 'location' ) != undefined ? request.param( 'location' ) : user.location;
 
-                if ( request.param( 'email' ) || request.param( 'password' ) )
+                if ( request.param( 'email' ) != undefined || request.param( 'password' ) != undefined )
                 {
                     user.updateApiSecret();
                 }
@@ -132,6 +139,27 @@ exports.bindToApp = function( app ) {
         // the request.session.user is just a bare hash, no longer a mongoose model, so we need to use
         // models.censor vs. the member function
         response.json( models.censor( request.session.user, { 'passwordHash': true } ) );
+    });
+    
+    app.post( '/Users', function( request, response ) {
+        var hashList = request.param( 'users' );
+        
+        models.User.find( { 'hash': { $in: hashList } }, function( error, users ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                keepGoing = false;
+                return;
+            }
+            
+            var result = [];
+            for ( var index = 0; index < users.length; ++index )
+            {
+                result.push( users[ index ].censored( { 'email': true, 'passwordHash': true, 'apiSecret': true } ) );
+            }
+            
+            response.json( result );
+        });
     });
     
     app.get( '/User/:hash', function( request, response ) {

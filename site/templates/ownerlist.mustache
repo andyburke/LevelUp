@@ -1,0 +1,17 @@
+<table class="zebra-striped">
+    {{#owners}}
+        <tr>
+            <td><a href="#/User/{{.}}"><span id="{{.}}-nickname">(no nickname)</span><br/>{{.}}</a></td>
+            <td><a href="/Context/{{context._id}}/owners/{{.}}" class="remove-context-owner-link">[remove]</a></td>
+        </tr>
+    {{/owners}}
+</table>
+
+<div class="pull-right">
+    <form>
+        <input type="hidden" id="contextId" name="contextId" value="{{context._id}}"/>
+        <input class="span4" type="test" id="newowner" name="newowner" placeholder="Add Owner by Entering an Email"/>
+        <button class="btn primary add-context-owner-button" data-loading-text="Adding..." data-complete-text="Added!">Add</button>
+    </form>
+</div>
+

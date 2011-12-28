@@ -5,7 +5,7 @@ exports.bindToApp = function( app ) {
     app.post( '/Context', checks.user, function( request, response ) {
         
         var newContext = new models.Context();
-        newContext.ownerIds = [ request.session.user._id ];
+        newContext.owners = [ request.session.user.hash ];
         newContext.name = request.param( 'name' );
         newContext.description = request.param( 'description' );
         newContext.image = request.param( 'image' );
@@ -22,12 +22,12 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.put( '/Context/:contextId', checks.ownsContext, function( request, response ) {
-        request.context.name = request.param( 'name' ) ? request.param( 'name' ) : request.context.name;
-        request.context.description = request.param( 'description' ) ? request.param( 'description' ) : request.context.description;
-        request.context.image = request.param( 'image' ) ? request.param( 'image' ) : request.context.image;
-        request.context.url = request.param( 'url' ) ? request.param( 'url' ) : request.context.url;
-        request.context.ownerIds = request.param( 'ownerIds' ) ? request.param( 'ownerIds' ) : request.context.ownerIds;
+    app.put( '/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
+        request.context.name = request.param( 'name' ) != undefined ? request.param( 'name' ) : request.context.name;
+        request.context.description = request.param( 'description' ) != undefined ? request.param( 'description' ) : request.context.description;
+        request.context.image = request.param( 'image' ) != undefined ? request.param( 'image' ) : request.context.image;
+        request.context.url = request.param( 'url' ) != undefined ? request.param( 'url' ) : request.context.url;
+        request.context.owners = request.param( 'owners' ) ? request.param( 'owners' ) : request.context.owners;
         
         request.context.save( function( error ) {
             if ( error )
@@ -58,7 +58,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/Context/:contextId', checks.ownsContext, function( request, response ) {
+    app.del( '/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
         request.context.remove( function( error ) {
             if ( error )
             {
@@ -71,7 +71,7 @@ exports.bindToApp = function( app ) {
     });
     
     app.get( '/Contexts', checks.user, function( request, response ) {
-        models.Context.find( { 'ownerIds': request.session.user._id }, function( error, contexts ) {
+        models.Context.find( { 'owners': request.session.user.hash }, function( error, contexts ) {
             if ( error )
             {
                 response.json( error, 500 );
@@ -80,5 +80,44 @@ exports.bindToApp = function( app ) {
             
             response.json( contexts );
         });
-    });   
+    });
+    
+    app.post( '/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
+        request.context.owners.push( request.params.ownerHash );
+        request.context.save( function( error ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            response.json( request.context );
+        });
+    });
+    
+    app.del( '/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
+        if ( request.context.owners.indexOf( request.params.ownerHash ) != -1 )
+        {
+            request.context.owners.splice( request.context.owners.indexOf( request.params.ownerHash ), 1 );
+            if ( request.context.owners.length == 0 )
+            {
+                response.json( 'Cannot remove last owner.', 403 );
+                return;
+            }
+
+            request.context.save( function( error ) {
+                if ( error )
+                {
+                    response.json( error, 500 );
+                    return;
+                }
+                
+                response.json( request.context );
+            });
+        }
+        else
+        {
+            response.json( request.context );
+        }
+    });
 }

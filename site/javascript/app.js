@@ -221,6 +221,28 @@ var app = Sammy( function() {
                 {
                     renderAchievementClasses( context, cachedClasses );
                 }
+                
+                $( '#ownerlist' ).toggleLoading();
+                renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
+                    $.ajax({
+                        url: apiServer + '/Users',
+                        type: 'POST',
+                        data: JSON.stringify( { 'users': context.owners } ),
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        success: function( owners ) {
+                            for ( var index = 0; index < owners.length; ++index )
+                            {
+                                $( '#' + owners[ index ].hash + '-nickname' ).html( owners[ index ].nickname );
+                            }
+                            $( '#ownerlist' ).toggleLoading(); 
+                        },
+                        error: function( response, status, error ) {
+                            $( '#ownerlist' ).toggleLoading();
+                            console.log( error );
+                        }
+                    });
+                });
             });
         }
         
@@ -749,4 +771,92 @@ $('.reset-achievementclass-button').live( 'click', function( event ) {
         $(form).find( '#' + key ).val( cachedAchievementClass[ key ] );
         $(form).find( '#' + key ).html( cachedAchievementClass[ key ] );
     }
+});
+
+$('.add-context-owner-button').live( 'click', function( event ) {
+    event.preventDefault();
+    var button = this;    
+    var form = $( this ).parents( 'form:first' );
+    
+    $( button ).button( 'loading' );
+    var contextId = $( form ).find( '#contextId' ).val();
+    var hash = Crypto.MD5( $( form ).find( '#newowner' ).val().trim().toLowerCase() );
+
+    $.ajax({
+        url: apiServer + '/Context/' + contextId + '/Owners/' + hash,
+        type: 'POST',
+        dataType: 'json',
+        success: function( context ) {
+            g_ContextCache[ context._id ] = context;
+            $(button).button( 'complete' );
+            setTimeout( function() {
+                $(button).button( 'reset' );
+            }, 2000 );            
+
+            $( '#ownerlist' ).toggleLoading();
+            renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
+                $.ajax({
+                    url: apiServer + '/Users',
+                    type: 'POST',
+                    data: JSON.stringify( { 'users': context.owners } ),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function( owners ) {
+                        for ( var index = 0; index < owners.length; ++index )
+                        {
+                            $( '#' + owners[ index ].hash + '-nickname' ).html( owners[ index ].nickname );
+                        }
+                        $( '#ownerlist' ).toggleLoading(); 
+                    },
+                    error: function( response, status, error ) {
+                        $( '#ownerlist' ).toggleLoading();
+                        console.log( error );
+                    }
+                });
+            });
+        },
+        error: function( response, status, error ) {
+            $( button ).button( 'reset' );
+            console.log( error );
+        }
+    });
+});
+
+$('.remove-context-owner-link').live( 'click', function( event ) {
+    event.preventDefault();
+    var link = this;
+    
+    $.ajax({
+        url: apiServer + link.href,
+        type: 'DELETE',
+        dataType: 'json',
+        success: function( context ) {
+            g_ContextCache[ context._id ] = context;
+            
+            $( '#ownerlist' ).toggleLoading();
+            renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
+                $.ajax({
+                    url: apiServer + '/Users',
+                    type: 'POST',
+                    data: JSON.stringify( { 'users': context.owners } ),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function( owners ) {
+                        for ( var index = 0; index < owners.length; ++index )
+                        {
+                            $( '#' + owners[ index ].hash + '-nickname' ).html( owners[ index ].nickname );
+                        }
+                        $( '#ownerlist' ).toggleLoading(); 
+                    },
+                    error: function( response, status, error ) {
+                        $( '#ownerlist' ).toggleLoading();
+                        console.log( error );
+                    }
+                });
+            });
+        },
+        error: function( response, status, error ) {
+            console.log( error );
+        }
+    });
 });

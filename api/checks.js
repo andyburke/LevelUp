@@ -4,102 +4,123 @@ var sha1 = require( 'sha1' );
 
 exports.user = function( request, response, next )
 {
-    if ( !request.session.user )
+    if ( request.session.user )
     {
-        response.json( 'You must be logged in to access this resource.', 403 );
+        next();
         return;
     }
 
-    next();
-}
-
-exports.ownsContext = function( request, response, next ) {
-    var apiSecret = request.param( 'apiSecret' );
-    var apiKey = request.param( 'apiKey' );
-
-    function foundUser( user )
+    var authorization = request.headers.authorization;
+    if ( authorization )
     {
-        models.Context.findById( request.params.contextId, function( error, context ) {
+        var parts = authorization.split(' ');
+        var scheme = parts[0];
+        var credentials = new Buffer( parts[ 1 ], 'base64' ).toString().split( ':' );
+    
+        if ( 'Basic' != scheme )
+        {
+            response.send( 'Basic authorization is the only supported authorization scheme.', 400 );
+            return;
+        }
+        
+        var email = credentials[ 0 ];
+        var password = credentials[ 1 ];
+        
+        models.User.findOne( { 'email': email.toLowerCase() }, function( error, user ) {
             if ( error )
             {
                 response.json( error, 500 );
                 return;
             }
             
-            if ( !context )
+            if ( !user )
             {
-                response.json( 'No context for id: ' + request.params.contextId, 404 );
+                response.json( 'Could not locate a user with email addres: ' + email, 404 );
                 return;
             }
             
-            if ( context.ownerIds.indexOf( user._id ) != -1 )
+            if ( user.passwordHash != sha1( password ) )
             {
-                request.context = context;
-                next();
+                response.json( 'Invalid password.', 403 );
+                return;
+            }
+            
+            request.session.user = user;
+            request.session.save();
+            next();
+            return;
+        });
+
+        return;
+    }
+
+    var apiSecret = request.param( 'apiSecret' );
+    var apiKey = request.param( 'apiKey' );
+
+    if ( apiSecret && apiKey )
+    {
+    
+        models.User.findById( apiKey, function( error, user ) {
+            if ( error )
+            {
+                request.json( error, 500 );
+                return;
+            }
+            
+            if ( !user )
+            {
+                request.json( 'Could not find a user with key: ' + apiKey, 404 );
                 return;
             }
     
-            response.json( 'You are not authorized to access this resource.', 403 );
+            if ( user.apiSecret != apiSecret )
+            {
+                request.json( 'Invalid apiSecret.', 403 );
+                return;
+            }
+            
+            request.session.user = user;
+            request.session.save();
+            next();
             return;
         });
-    }
-    
-    if ( request.session.user )
-    {
-        foundUser( request.session.user );
+        
         return;
     }
     
-    models.User.findById( apiKey, function( error, user ) {
-        if ( error )
-        {
-            request.json( error, 500 );
-            return;
-        }
-        
-        if ( !user )
-        {
-            request.json( 'Could not find a user with key: ' + apiKey, 404 );
-            return;
-        }
-
-        if ( user.apiSecret != apiSecret )
-        {
-            request.json( 'Invalid apiSecret.', 403 );
-            return;
-        }
-        
-        foundUser( user );
-    });
+    response.json( 'No valid authentication method used (session, authorization, apiKey/apiSecret).', 403 );
+    return;
 }
 
-exports.ownsAchievementClass = function( request, response, next ) {
-    if ( !request.context )
+exports.ownsContext = function( request, response, next ) {
+
+    if ( !request.session.user )
     {
-        response.json( 'Internal server error: context is not set.', 500 );
+        response.json( 'Server error: user session does not exist.  Please report this problem.', 500 );
         return;
     }
     
-    models.AchievementClass.findById( request.params.classId, function( error, achievementClass ) {
+    models.Context.findById( request.params.contextId, function( error, context ) {
         if ( error )
         {
             response.json( error, 500 );
             return;
         }
         
-        if ( !achievementClass )
+        if ( !context )
         {
-            response.json( 'No achievement class for id: ' + request.params.classId, 404 );
+            response.json( 'No context for id: ' + request.params.contextId, 404 );
             return;
         }
         
-        if ( !achievementClass.contextId.equals( request.context._id ) )
+        if ( context.owners.indexOf( request.session.user.hash ) != -1 )
         {
-            response.json( 'You do not own this context.', 403 );
+            request.context = context;
+            next();
             return;
         }
 
-        request.achievementClass = achievementClass;
-        next();
+        response.json( 'You are not authorized to access this resource.', 403 );
+        return;
     });
 }
