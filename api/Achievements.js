@@ -31,6 +31,8 @@ exports.bindToApp = function( app ) {
                         return;
                     }
                     
+                    // TODO: up their webscore
+                    
                     response.json( newAchievement );
                 });
             });
@@ -96,6 +98,8 @@ exports.bindToApp = function( app ) {
                     return;
                 }
                 
+                // TODO: decrement their webscore
+                
                 response.json( { 'removed': true } );
             });
         });
@@ -127,6 +131,8 @@ exports.bindToApp = function( app ) {
                     response.json( removeError, 500 );
                     return;
                 }
+                
+                // TODO: decrement their webscore
                 
                 response.json( { 'removed': true } );
             });
