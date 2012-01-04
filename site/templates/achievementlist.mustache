@@ -1,13 +1,14 @@
-{{#achievements}}
-    <div class="row">
-        <div class="span3">
-            <a href="#/Context/{{contextId}}"><img src="{{image}}"></a>
-        </div>
-        <div class="span5">
-            <h2>{{name}} <small>{{description}}</small></h2>
-        </div>
-        <div class="span2">
-            <h3>{{points}}</h3>
-        </div>
-    </div>
-{{/achievements}}
+<table class="zebra-striped">
+    <tr>
+        <th></th>
+        <th>Achievement</th>
+        <th>Points</th>
+    </tr>
+    {{#achievements}}
+        <tr id="{{_id}}">
+            <td><a class="context-link" href=""><img width="50" height="50" class="achievement-image" src="/images/trophy.png"></a></td>
+            <td><h2><span class="achievement-name"></span> <small><span class="achievement-description"></span></small></h2></td>
+            <td><h3><span class="achievement-points"></span></h3></td>
+        </tr>
+    {{/achievements}}
+</table>

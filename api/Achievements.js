@@ -3,11 +3,11 @@ var checks = require( './checks.js' );
 
 exports.bindToApp = function( app ) {
     
-    app.post( '/Context/:contextId/Achievement', checks.ownsContext, function( request, response ) {
+    app.post( '/User/:userHash/Context/:contextId/AchievementClass/:achievementClassId', checks.ownsContext, function( request, response ) {
         var newAchievement = new models.Achievement();
         newAchievement.contextId = request.context._id;
         newAchievement.userHash = request.param( 'userHash' );
-        newAchievement.classId = request.param( 'classId' );
+        newAchievement.classId = request.param( 'achievementClassId' );
         
         function save()
         {
@@ -69,7 +69,39 @@ exports.bindToApp = function( app ) {
         }
     });
     
-    app.del( '/Context/:contextId/Achievement/:achievementId', checks.ownsContext, function( request, response ) {
+    app.del( '/User/:userHash/Context/:contextId/AchievementClass/:achievementClassId', checks.ownsContext, function( request, response ) {
+        models.Achievement.findOne( { 'userHash': request.param( 'userHash' ), 'classId': request.param( 'achievementClassId' ) }, function( error, achievement ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            if ( !achievement )
+            {
+                response.json( 'Could not locate an achievement with class id: ' + request.params.achievementClassId, 404 );
+                return;
+            }
+            
+            if ( !achievement.contextId.equals( request.context._id ) )
+            {
+                response.json( 'You do not own this achievement.', 403 );
+                return;
+            }
+            
+            achievement.remove( function( removeError ) {
+                if ( removeError )
+                {
+                    response.json( removeError, 500 );
+                    return;
+                }
+                
+                response.json( { 'removed': true } );
+            });
+        });
+    });
+
+    app.del( '/User/:userHash/Context/:contextId/Achievement/:achievementId', checks.ownsContext, function( request, response ) {
         models.Achievement.findById( request.params.achievementId, function( error, achievement ) {
             if ( error )
             {

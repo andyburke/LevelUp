@@ -2,31 +2,45 @@
     <h1><a href="/#/ManageContext/{{context._id}}">{{context.name}}</a> &gt; {{class.name}}</h1>
 </div>
 <div class="row">
-    <form>
-      <fieldset>
-        <div class="clearfix">
-          <label>Unique ID</label>
-          <div class="input">
-            <input class="span5 disabled" id="id" name="id" type="text" value="{{class._id}}" disabled />
-          </div>
-        </div><!-- /clearfix -->
-        <div class="clearfix">
-          <label for="name">Name</label>
-          <div class="input">
-            <input class="span5" id="name" name="name" type="text" value="{{class.name}}" />
-          </div>
-        </div><!-- /clearfix -->
-        <div class="clearfix">
-          <label for="textarea">Description</label>
-          <div class="input">
-            <textarea class="span5" id="description" name="description" rows="3">{{class.description}}</textarea>
-          </div>
-        </div><!-- /clearfix -->
-        <input type="hidden" id="contextId" name="contextId" value="{{context._id}}" />
-        <div class="actions">
-            <button class="btn primary update-achievementclass-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-achievementclass-button">Reset</button>
+    <div class="span8">
+        <form>
+          <fieldset>
+            <div class="clearfix">
+              <label>Unique ID</label>
+              <div class="input">
+                <input class="span5 disabled" id="id" name="id" type="text" value="{{class._id}}" disabled />
+              </div>
+            </div><!-- /clearfix -->
+            <div class="clearfix">
+              <label for="name">Name</label>
+              <div class="input">
+                <input class="span5" id="name" name="name" type="text" value="{{class.name}}" />
+              </div>
+            </div><!-- /clearfix -->
+            <div class="clearfix">
+              <label for="textarea">Description</label>
+              <div class="input">
+                <textarea class="span5" id="description" name="description" rows="3">{{class.description}}</textarea>
+              </div>
+            </div><!-- /clearfix -->
+            <input type="hidden" id="contextId" name="contextId" value="{{context._id}}" />
+            <div class="actions">
+                <button class="btn primary update-achievementclass-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-achievementclass-button">Reset</button>
+            </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="span5">
+        You can use this to grant this achievement to a given email address:
+        <p>
+        <div class="pull-right">
+            <form>
+                <input type="hidden" id="contextId" name="contextId" value="{{context._id}}"/>
+                <input type="hidden" id="achievementClassId" name="achievementClassId" value="{{class._id}}"/>
+                <input class="span3" type="test" id="target" name="target" placeholder="Enter target email"/>
+                <button class="btn primary grant-achievement-button" data-loading-text="Granting..." data-complete-text="Granted!">Grant</button>
+            </form>
         </div>
-        </fieldset>
-    </form>
+    </div>
 </div>
 

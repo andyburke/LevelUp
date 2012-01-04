@@ -107,37 +107,78 @@ var app = Sammy( function() {
     this.get( '#/User/:hash', function() {
         $('#main').toggleLoading();
 
+        var userHash = this.params[ 'hash' ];
+        
+        function render( user )
+        {
+            renderTemplate( '#main', '/templates/user.mustache', { 'user': user }, function() {
+                $( '#main' ).toggleLoading();
+
+                $( '#achievements' ).toggleLoading();
+                $.ajax({
+                    url: apiServer + '/User/' + user.hash + '/Achievements',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function( achievements ) {
+                        
+                        renderTemplate( '#achievements', '/templates/achievementlist.mustache', { 'achievements': achievements }, function () {
+                            $( '#achievements' ).toggleLoading();
+
+                            for ( var index = 0; index < achievements.length; ++index )
+                            {
+                                var achievement = achievements[ index ];
+                                var achievementDiv = $( '#' + achievement._id );
+                                achievementDiv.toggleLoading();
+                                
+                                function renderAchievement( achievementClass )
+                                {
+                                    achievementDiv.find( '.context-link' ).attr( 'href', '#/Context/' + achievementClass.contextId );
+                                    achievementDiv.find( '.achievement-image' ).attr( 'src', achievementClass.image );
+                                    achievementDiv.find( '.achievement-name' ).html( achievementClass.name );
+                                    achievementDiv.find( '.achievement-description' ).html( achievementClass.description );
+                                    achievementDiv.find( '.achievement-points' ).html( achievementClass.points );
+                                    achievementDiv.toggleLoading();
+                                }
+                                
+                                if ( g_AchievementClassCache[ achievement.classId ] )
+                                {
+                                    renderAchievement( g_AchievementClassCache[ achievement.classId ] );
+                                }
+                                else
+                                {
+                                    $.ajax({
+                                        url: apiServer + '/Context/' + achievement.contextId + '/AchievementClass/' + achievement.classId,
+                                        type: 'GET',
+                                        dataType: 'json',
+                                        success: function( achievementClass ) {
+                                            renderAchievement( achievementClass );
+                                        },
+                                        error: function( response, status, error ) {
+                                            achievementDiv.toggleLoading();  
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    error: function( response, status, error ) {
+                        $( '#achievements' ).toggleLoading();
+                    }
+                });
+            });
+        }
+        
         $.ajax({
-            url: apiServer + '/User/' + this.params[ 'hash' ],
+            url: apiServer + '/User/' + userHash,
             type: 'GET',
             dataType: 'json',
             success: function( user ) {
-                renderTemplate( '#main', '/templates/user.mustache', { 'user': user }, function() {
-                    $( '#main' ).toggleLoading();
-
-                    $( '#achievements' ).toggleLoading();
-                    $.ajax({
-                        url: apiServer + '/User/' + user._id + '/Achievements',
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function( achievements ) {
-                            renderTemplate( '#achievements', '/templates/achievementlist.mustache', { 'achievements': achievements }, function () {
-                                $( '#achievements' ).toggleLoading();
-                            });
-                        },
-                        error: function( response, status, error ) {
-                            $( '#achievements' ).toggleLoading();
-                        }
-                    });
-
-                });
+                render( user );
             },
             error: function( response, status, error ) {
                 if ( response.status == 404 )
                 {
-                    renderTemplate( '#main', '/templates/user.mustache', { 'user': {} }, function() {
-                        $( '#main' ).toggleLoading();
-                    });
+                    render( { 'hash': userHash  } );
                 }
                 else
                 {
@@ -268,6 +309,39 @@ var app = Sammy( function() {
             renderContext( cachedContext );
         }
     });
+
+    this.get( '#/Context/:contextId', function () {
+        $( '#main' ).toggleLoading();
+
+        var contextId = this.params[ 'contextId' ];
+        var cachedContext = g_ContextCache[ contextId ];
+
+        if ( !cachedContext )
+        {
+            $.ajax({
+                url: apiServer + '/Context/' + contextId,
+                type: 'GET',
+                dataType: 'json',
+                success: function( context ) {
+                    g_ContextCache[ context._id ] = context;
+                    renderTemplate( '#main', '/templates/context.mustache', { 'context': context }, function () {
+                        $( '#main' ).toggleLoading();
+                    });
+                },
+                error: function( response, status, error ) {
+                    $( '#main' ).toggleLoading();
+                    console.log( error );
+                }
+            });
+        }
+        else
+        {
+            renderTemplate( '#main', '/templates/context.mustache', { 'context': cachedContext }, function () {
+                $( '#main' ).toggleLoading();
+            });
+        }
+    });
+
 
     this.get( '#/Context/:contextId/CreateAchievementClass', function () {
         $( '#main' ).toggleLoading();
@@ -856,6 +930,35 @@ $('.remove-context-owner-link').live( 'click', function( event ) {
             });
         },
         error: function( response, status, error ) {
+            console.log( error );
+        }
+    });
+});
+
+$('.grant-achievement-button').live( 'click', function( event ) {
+    event.preventDefault();
+    var button = this;
+    var form = $( this ).parents( 'form:first' );
+    
+    $( button ).button( 'loading' );
+    var contextId = $( form ).find( '#contextId' ).val();
+    var achievementClassId = $( form ).find( '#achievementClassId' ).val();
+    var hash = Crypto.MD5( $( form ).find( '#target' ).val().trim().toLowerCase() );
+
+    $.ajax({
+        url: apiServer + '/User/' + hash + '/Context/' + contextId + '/AchievementClass/' + achievementClassId,
+        type: 'POST',
+        dataType: 'json',
+        success: function( context ) {
+            $(button).button( 'complete' );
+            setTimeout( function() {
+                $(button).button( 'reset' );
+            }, 2000 );
+            
+            $( form ).find( '#target' ).val( '' );
+        },
+        error: function( response, status, error ) {
+            $( button ).button( 'reset' );
             console.log( error );
         }
     });

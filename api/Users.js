@@ -172,7 +172,7 @@ exports.bindToApp = function( app ) {
             
             if ( !user )
             {
-                response.json( 'No user found for the hash: ' + request.params.organizationId, 404 );
+                response.json( 'No user found for the hash: ' + request.params.hash, 404 );
                 return;
             }
             
