@@ -1,6 +1,9 @@
 var models = require( './models.js' );
 var checks = require( './checks.js' );
 
+var fs = require( 'fs' );
+var path = require( 'path' );
+
 exports.bindToApp = function( app ) {
     app.post( '/Context', checks.user, function( request, response ) {
         
@@ -68,6 +71,50 @@ exports.bindToApp = function( app ) {
             
             response.json( { 'removed': true } );
         });
+    });
+    
+    app.post( '/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
+        if ( !request.files.contextImage )
+        {
+            response.json( 'You must upload one file (no more, no less) to this url with a part id of "contextImage".', 400 );
+            return;
+        }
+        
+        var file = request.files.contextImage;
+        var extension = path.extname( file.name ).toLowerCase();
+        fs.mkdir( 'site/images/contexts', 755, function( error ) {
+            if ( error && error.code != 'EEXIST' )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            var target = 'site/images/contexts/' + request.params.contextId + extension;
+            fs.rename( file.path, target, function( renameError ) {
+                if ( renameError )
+                {
+                    response.json( renameError, 500 );
+                    return;
+                }
+                
+                request.context.image = '/images/contexts/' + request.params.contextId + extension;
+                request.context.save( function( saveError ) {
+                    if ( saveError )
+                    {
+                        response.json( saveError, 500 );
+                        return;
+                    }
+                    
+                    response.json( request.context );
+                });                
+            });
+        });
+    });
+
+    app.del( '/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
+        // TODO: delete file from disk
+        // TODO: unset context image url
+        response.json( 'Not implemented.', 500 );
     });
     
     app.get( '/Contexts', checks.user, function( request, response ) {

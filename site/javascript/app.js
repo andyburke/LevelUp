@@ -664,6 +664,53 @@ $('.update-context-button').live( 'click', function( event ) {
         console.log( 'Cache Error' );
         return;
     }
+    
+    var imageFileInput = $(form).find( '#image-file' );
+    if ( imageFileInput.length )
+    {
+        var file = imageFileInput[ 0 ].files[ 0 ];
+        if ( file && file.fileName )
+        {
+            $( '#context-image' ).toggleLoading();
+            
+            var onProgress = function( e ) {
+                if ( e.lengthComputable )
+                {
+                    var percentComplete = ( e.loaded / e.total ) * 100;
+                }
+            };
+            
+            var onReady = function( e ) {
+                // ready state
+                console.log( e );
+            };
+            
+            var onError = function( error ) {
+                console.log( error );
+            };
+            
+            var formData = new FormData();
+            formData.append( 'contextImage', file );
+
+            $.ajax({
+                url: apiServer + '/Context/' + contextId + '/Image',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success: function( updatedContext ) {
+                    g_ContextCache[ contextId ] = updatedContext;
+                    $( '#context-image' ).attr( 'src', updatedContext.image );
+                    $( '#context-image' ).toggleLoading();
+                },
+                error: function( xhr ) {
+                    console.log( "error updating image" );
+                    $( '#context-image' ).toggleLoading();
+                }
+            });
+        }
+    }
 
     var name = $(form).find( "#name" ).val();
     if ( name != context.name )
