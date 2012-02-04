@@ -3,30 +3,38 @@
 </div>
 <div class="row">
     <div class="span8">
+        <div id="achievementclass-image-container">
+            <img id="achievementclass-image" src="{{class.image}}" width="200" height="200" />
+        </div>
         <form>
-          <fieldset>
-            <div class="clearfix">
-              <label>Unique ID</label>
-              <div class="input">
-                <input class="span5 disabled" id="id" name="id" type="text" value="{{class._id}}" disabled />
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
-              <label for="name">Name</label>
-              <div class="input">
-                <input class="span5" id="name" name="name" type="text" value="{{class.name}}" />
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
-              <label for="textarea">Description</label>
-              <div class="input">
-                <textarea class="span5" id="description" name="description" rows="3">{{class.description}}</textarea>
-              </div>
-            </div><!-- /clearfix -->
-            <input type="hidden" id="contextId" name="contextId" value="{{context._id}}" />
-            <div class="actions">
-                <button class="btn primary update-achievementclass-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-achievementclass-button">Reset</button>
-            </div>
+            <fieldset>
+                <div class="clearfix">
+                    <div class="input">
+                        <input type="file" name="image-file" id="image-file" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                  <label>Unique ID</label>
+                  <div class="input">
+                    <input class="span5 disabled" id="id" name="id" type="text" value="{{class._id}}" disabled />
+                  </div>
+                </div><!-- /clearfix -->
+                <div class="clearfix">
+                  <label for="name">Name</label>
+                  <div class="input">
+                    <input class="span5" id="name" name="name" type="text" value="{{class.name}}" />
+                  </div>
+                </div><!-- /clearfix -->
+                <div class="clearfix">
+                  <label for="textarea">Description</label>
+                  <div class="input">
+                    <textarea class="span5" id="description" name="description" rows="3">{{class.description}}</textarea>
+                  </div>
+                </div><!-- /clearfix -->
+                <input type="hidden" id="contextId" name="contextId" value="{{context._id}}" />
+                <div class="actions">
+                    <button class="btn primary update-achievementclass-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-achievementclass-button">Reset</button>
+                </div>
             </fieldset>
         </form>
     </div>

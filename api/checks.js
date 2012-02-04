@@ -113,14 +113,50 @@ exports.ownsContext = function( request, response, next ) {
             return;
         }
         
-        if ( context.owners.indexOf( request.session.user.hash ) != -1 )
+        if ( context.owners.indexOf( request.session.user.hash ) == -1 )
         {
-            request.context = context;
-            next();
+            response.json( 'You are not authorized to access this resource.', 403 );
             return;
         }
 
-        response.json( 'You are not authorized to access this resource.', 403 );
+        request.context = context;
+        next();
+    });
+}
+
+exports.ownsAchievementClass = function( request, response, next ) {
+    if ( !request.session.user )
+    {
+        response.json( 'Server programming error: user session does not exist when checking achievement class ownership.  Please report this problem.', 500 );
         return;
+    }
+    
+    if ( !request.context )
+    {
+        response.json( 'Server programming error: context is not set when checking achievement class ownership.  Please report this problem.', 500 );
+        return;
+    }
+    
+    models.AchievementClass.findById( request.params.achievementClassId, function( error, achievementClass ) {
+        if ( error )
+        {
+            response.json( error, 500 );
+            return;
+        }
+        
+        if ( !achievementClass )
+        {
+            response.json( 'No achievement class for id: ' + request.params.achievementClassId, 404 );
+            return;
+        }
+        
+        if ( !achievementClass.contextId.equals( request.context._id ) )
+        {
+            response.json( 'Context with id ' + request.context._id + ' does not own achievement class with id ' + achievementClass._id, 403 );
+            return;
+        }
+        
+        request.achievementClass = achievementClass;
+        next();
     });
 }
