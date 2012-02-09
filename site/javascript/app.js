@@ -463,9 +463,6 @@ function HandleAuthentication( resource, form )
     var email = $(form).find( "input[type=text][name=email]" ).val();
     var password = $(form).find( "input[type=password][name=password]" ).val();
 
-    $(form).find( "input[type=text][name=email]" ).val( '' );
-    $(form).find( "input[type=password][name=password]" ).val( '' );
-
     $(form).toggleLoading();
     
     $.ajax({
@@ -479,6 +476,10 @@ function HandleAuthentication( resource, form )
         contentType: 'application/json',
         cache: false,
         success: function( data ) {
+            $(form).find( "input[type=text][name=email]" ).val( '' );
+            $(form).find( "input[type=password][name=password]" ).val( '' );
+            $(form).find( "input[type=password][name=password]" ).removeClass( 'error' );
+
             if ( resource == 'User' )
             {
                 currentUser = data;
@@ -498,6 +499,13 @@ function HandleAuthentication( resource, form )
             }
         },
         error: function( response, status, error ) {
+            $(form).find( "input[type=password][name=password]" ).val( '' );
+
+            if ( response.status == 403 )
+            {
+                $(form).find( "input[type=password][name=password]" ).addClass( 'error' );
+            }
+            
             $(form).toggleLoading();
             console.log( error );
         }
@@ -583,6 +591,7 @@ $('.update-account-button').live( 'click', function( event ) {
             contentType: 'application/json',
             success: function( data ) {
                 currentUser = data;
+                $(form).find( '#password' ).val( '' );
                 $(form).toggleLoading();
                 $(button).button( 'complete' );
                 setTimeout( function() {
