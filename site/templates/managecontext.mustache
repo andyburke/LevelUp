@@ -2,51 +2,53 @@
     <h1>{{name}}</h1>
 </div>
 <div class="row">
-    <div class="span8">
+    <div class="span7">
         <img id="context-image" src="{{image}}" width="200" height="200" />
-        <form>
+        <form class="form-horizontal">
             <fieldset>
-                <div class="clearfix">
-                    <div class="input">
+                <div class="control-group">
+                    <div class="controls">
                         <input type="file" name="image-file" id="image-file" />
                     </div>
                 </div>
-                <div class="clearfix">
+                <div class="control-group">
                     <label>Unique ID</label>
-                    <div class="input">
-                        <input class="span5 disabled" id="id" name="id" type="text" value="{{_id}}" disabled />
+                    <div class="controls">
+                        <input class="input-xlarge disabled" id="id" name="id" type="text" value="{{_id}}" disabled />
                     </div>
                 </div><!-- /clearfix -->
-                <div class="clearfix">
+                <div class="control-group">
                     <label for="name">Name</label>
-                    <div class="input">
-                        <input class="span5" id="name" name="name" type="text" value="{{name}}" />
+                    <div class="controls">
+                        <input class="input-xlarge" id="name" name="name" type="text" value="{{name}}" />
                     </div>
                 </div><!-- /clearfix -->
-                <div class="clearfix">
+                <div class="control-group">
                     <label for="url">URL</label>
-                    <div class="input">
-                        <input class="span5" id="url" name="url" type="text" value="{{url}}" />
+                    <div class="controls">
+                        <input class="input-xlarge" id="url" name="url" type="text" value="{{url}}" />
                     </div>
                 </div><!-- /clearfix -->
-                <div class="clearfix">
+                <div class="control-group">
                     <label for="textarea">Description</label>
-                    <div class="input">
-                        <textarea class="span5" id="description" name="description" rows="3">{{description}}</textarea>
+                    <div class="controls">
+                        <textarea class="input-xlarge" id="description" name="description" rows="3">{{description}}</textarea>
                     </div>
                 </div><!-- /clearfix -->
-                <div class="actions">
-                    <button class="btn primary update-context-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-context-button">Reset</button>
+                <div class="form-actions">
+                    <button class="btn btn-primary update-context-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-context-button">Reset</button>
                 </div>
             </fieldset>
         </form>
     </div>
-    <div class="span5">
+    <div class="span4">
         <h2>Owners</h2>
         <div id="ownerlist">
         </div>
     </div>
 </div>
-<div class="row" id="achievementclasses">
+<div class="row">
+    <div id="achievementclasses" class="span12">
+    </div>
 </div>
 

@@ -5,7 +5,7 @@ var sha1 = require( 'sha1' );
 
 exports.bindToApp = function( app ) {
     
-    app.post( '/Session', function( request, response ) {
+    app.post( '/api/1.0/Session', function( request, response ) {
         
         if ( request.session.user )
         {
@@ -68,7 +68,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/Session', checks.user, function( request, response ) {
+    app.del( '/api/1.0/Session', checks.user, function( request, response ) {
         if ( !request.session )
         {
             response.json( 'No current session.', 404 );

@@ -3,7 +3,7 @@ var checks = require( './checks.js' );
 
 exports.bindToApp = function( app ) {
     
-    app.post( '/User/:userHash/Context/:contextId/AchievementClass/:achievementClassId', checks.ownsContext, function( request, response ) {
+    app.post( '/api/1.0/User/:userHash/Context/:contextId/AchievementClass/:achievementClassId', checks.ownsContext, function( request, response ) {
         var newAchievement = new models.Achievement();
         newAchievement.contextId = request.context._id;
         newAchievement.userHash = request.param( 'userHash' );
@@ -71,7 +71,7 @@ exports.bindToApp = function( app ) {
         }
     });
     
-    app.del( '/User/:userHash/Context/:contextId/AchievementClass/:achievementClassId', checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/User/:userHash/Context/:contextId/AchievementClass/:achievementClassId', checks.ownsContext, function( request, response ) {
         models.Achievement.findOne( { 'userHash': request.param( 'userHash' ), 'classId': request.param( 'achievementClassId' ) }, function( error, achievement ) {
             if ( error )
             {
@@ -105,7 +105,7 @@ exports.bindToApp = function( app ) {
         });
     });
 
-    app.del( '/User/:userHash/Context/:contextId/Achievement/:achievementId', checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/User/:userHash/Context/:contextId/Achievement/:achievementId', checks.ownsContext, function( request, response ) {
         models.Achievement.findById( request.params.achievementId, function( error, achievement ) {
             if ( error )
             {
@@ -139,7 +139,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/User/:userHash/Achievements/:contextId?', function( request, response ) {
+    app.get( '/api/1.0/User/:userHash/Achievements/:contextId?', function( request, response ) {
         var criteria = { 'userHash': request.params.userHash };
         
         if ( request.params.contextId )
@@ -158,7 +158,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/User/:userHash/AchievementStream/:contextId?', function( request, response ) {
+    app.get( '/api/1.0/User/:userHash/AchievementStream/:contextId?', function( request, response ) {
         var criteria = { 'userHash': request.params.userHash };
         if ( request.params.contextId )
         {

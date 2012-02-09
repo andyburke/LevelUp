@@ -5,7 +5,7 @@ var fs = require( 'fs' );
 var path = require( 'path' );
 
 exports.bindToApp = function( app ) {
-    app.post( '/Context', checks.user, function( request, response ) {
+    app.post( '/api/1.0/Context', checks.user, function( request, response ) {
         
         var newContext = new models.Context();
         newContext.owners = [ request.session.user.hash ];
@@ -25,7 +25,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.put( '/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
+    app.put( '/api/1.0/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
         request.context.name = request.param( 'name' ) != undefined ? request.param( 'name' ) : request.context.name;
         request.context.description = request.param( 'description' ) != undefined ? request.param( 'description' ) : request.context.description;
         request.context.image = request.param( 'image' ) != undefined ? request.param( 'image' ) : request.context.image;
@@ -43,7 +43,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/Context/:contextId', function( request, response ) {
+    app.get( '/api/1.0/Context/:contextId', function( request, response ) {
         models.Context.findById( request.params.contextId, function( error, context ) {
             if ( error )
             {
@@ -61,7 +61,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
         request.context.remove( function( error ) {
             if ( error )
             {
@@ -73,7 +73,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.post( '/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
+    app.post( '/api/1.0/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
         if ( !request.files.contextImage )
         {
             response.json( 'You must upload one file (no more, no less) to this url with a part id of "contextImage".', 400 );
@@ -111,13 +111,13 @@ exports.bindToApp = function( app ) {
         });
     });
 
-    app.del( '/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
         // TODO: delete file from disk
         // TODO: unset context image url
         response.json( 'Not implemented.', 500 );
     });
     
-    app.get( '/Contexts', checks.user, function( request, response ) {
+    app.get( '/api/1.0/Contexts', checks.user, function( request, response ) {
         models.Context.find( { 'owners': request.session.user.hash }, function( error, contexts ) {
             if ( error )
             {
@@ -129,7 +129,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.post( '/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
+    app.post( '/api/1.0/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
         request.context.owners.push( request.params.ownerHash );
         request.context.save( function( error ) {
             if ( error )
@@ -142,7 +142,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
         if ( request.context.owners.indexOf( request.params.ownerHash ) != -1 )
         {
             request.context.owners.splice( request.context.owners.indexOf( request.params.ownerHash ), 1 );

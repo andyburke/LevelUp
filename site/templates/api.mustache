@@ -2,158 +2,885 @@
     <h1>LevelUp.io API</h1>
 </div>
 
-<div class="row">
-    <div class="span10">
-        <h2>Organizations</h2>
-    </div>
-</div>
-
-<div class="row">
-    <div class="span10">
-        <h3>URL: /Organization</h3>
-    </div>
-</div>
-
-<div class="row">
-    <div class="span10">
-        <h4>POST <small>Creates a new organization.</small></h4>
-        <table class="zebra-striped">
-            <tr>
-                <td><b>email</b></td>
-                <td>The organization email address.</td>
-            </tr>
-            <tr>
-                <td><b>password</b></td>
-                <td>The password to set for the organization.</td>
-            </tr>
-            <tr>
-                <td><b>name</b></td>
-                <td>The organization name.</td>
-            </tr>
-            <tr>
-                <td><b>description</b></td>
-                <td>A description for the organization.</td>
-            </tr>
-            <tr>
-                <td><b>url</b></td>
-                <td>A url for the organization.</td>
-            </tr>
-        </table>
-        
-        <h6>Example:</h6>
-        <pre class="prettyprint">
+<div class="tabbable tabs-right">
+    <ul class="nav nav-tabs">
+        <li><a href="/#/API#Users" class="active" data-toggle="tab">Users</a></li>
+        <li><a href="/#/API#Sessions" data-toggle="tab">Sessions</a></li>
+        <li><a href="/#/API#Contexts" data-toggle="tab">Contexts</a></li>
+        <li><a href="/#/API#AchievementClasses" data-toggle="tab">Achievement Classes</a></li>
+        <li><a href="/#/API#Achievements" data-toggle="tab">Achievements</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="Users">
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Creates a new user.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>email</b><i>(required)</i></td>
+                                <td>string</td>
+                                <td>The user's email address.</td>
+                            </tr>
+                            <tr>
+                                <td><b>password</b><i>(required)</i></td>
+                                <td>string</td>
+                                <td>The password to set for the user.</td>
+                            </tr>
+                            <tr>
+                                <td><b>nickname</b></td>
+                                <td>string</td>
+                                <td>A nickname for the user.</td>
+                            </tr>
+                            <tr>
+                                <td><b>bio</b></td>
+                                <td>string</td>
+                                <td>Short biographical information for the user.</td>
+                            </tr>
+                            <tr>
+                                <td><b>location</b></td>
+                                <td>string</td>
+                                <td>A string describing the user's location. Eg: "Los Angeles, CA", "The Moon", etc.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example Request Body:</h6>
+                    <pre class="prettyprint">
 {
-    email: 'test@test.com',
-    password: 'testpass',
-    name: 'The Test Organization',
-    description: 'This is a test organization.',
-    url: 'http://test.com'
+    email: "test@test.com",
+    password: "testpass",
+    nickname: "Testing Guy",
+    bio: "I am a testing dude!",
+    location: "The Future"
 }
-        </pre>
-    </div>
-    <div class="extra span4">
-        Stub organizations can easily be created without setting any of the fields.
-        However, they may be culled eventually.
-    </div>
-</div>
-
-<div class="row">
-    <div class="span10">
-        <h4>PUT <small>Updates an existing organization.</small></h4>
-        <table class="zebra-striped">
-            <tr>
-                <td><b>email</b></td>
-                <td>The organization email address.</td>
-            </tr>
-            <tr>
-                <td><b>password</b></td>
-                <td>The password to set for the organization.</td>
-            </tr>
-            <tr>
-                <td><b>name</b></td>
-                <td>The organization name.</td>
-            </tr>
-            <tr>
-                <td><b>description</b></td>
-                <td>A description for the organization.</td>
-            </tr>
-            <tr>
-                <td><b>url</b></td>
-                <td>A url for the organization.</td>
-            </tr>
-        </table>
-        
-        <h6>Example:</h6>
-        <pre class="prettyprint">
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User (PUT)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Updates an existing user.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>email</b><i>(required)</i></td>
+                                <td>string</td>
+                                <td>The user's email address.</td>
+                            </tr>
+                            <tr>
+                                <td><b>password</b><i>(required)</i></td>
+                                <td>string</td>
+                                <td>The password to set for the user.</td>
+                            </tr>
+                            <tr>
+                                <td><b>nickname</b></td>
+                                <td>string</td>
+                                <td>A nickname for the user.</td>
+                            </tr>
+                            <tr>
+                                <td><b>bio</b></td>
+                                <td>string</td>
+                                <td>Short biographical information for the user.</td>
+                            </tr>
+                            <tr>
+                                <td><b>location</b></td>
+                                <td>string</td>
+                                <td>A string describing the user's location. Eg: "Los Angeles, CA", "The Moon", etc.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example Request Body:</h6>
+                    <pre class="prettyprint">
 {
-    email: 'newemail@test.com',
-    description: 'This is a new test organization description.'
+    email: "newemail@test.com",
+    bio: "This is a new bio!"
 }
-        </pre>
-    </div>
-    <div class="extra span4">
-        <b>Requires Basic HTTP Authentication as the target organization.</b>
-    </div>
-</div>
-
-<div class="row">
-    <div class="span10">
-        <h4>GET <small>Retrieves an uncensored version of the current organization.</small></h4>
-        
-        <h6>Example:</h6>
-        <pre class="prettyprint">
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as the target user.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User (GET)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Retrieves an uncensored version of the current user.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre class="prettyprint">
 {
-    "updatedAt": "2011-12-13T11:03:15.000Z",
-    "apiSecret": "233bb10f64e4415c6c5f4e6457bcb66bd505d6c5",
-    "url": "http://test.com",
-    "description": "This is the test organization!",
-    "name": "test",
-    "passwordHash": "8167811ade95d0047af167703641944f6b2ac696",
-    "email": "test@test.com",
-    "_id": "4ee730f3187f51171f000026"
+    "_id": "4efa7fb7bc39b685e6000001",
+    "apiSecret": "d134c169711f59ebdcbe5a46ad056c601d5b4",
+    "bio": "This is a new bio!",
+    "email": "newmail@test.com",
+    "hash": "2d037f6a385d2874813417119d1be6f9",
+    "location": "The Future",
+    "nickname": "Testing Guy",
+    "updatedAt": "2011-12-28T03:05:45.898Z",
+    "score": 0
 }
-        </pre>
-    </div>
-    <div class="extra span4">
-        <b>Requires Basic HTTP Authentication as the target organization.</b>
-    </div>
-</div>
-
-<div class="row">
-    <div class="span10">
-        <h3>URL: /Organization/:organizationId</h3>
-    </div>
-</div>
-
-<div class="row">
-    <div class="span10">
-        <h4>GET <small>Retrieves an censored version of the specified organization.</small></h4>
-        
-        <h6>Example:</h6>
-        <pre class="prettyprint">
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User/:hash (GET)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Retrieves a censored version of the user with the given email md5 hash.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre class="prettyprint">
 {
-    "_id": "4ee730f3187f51171f000026",
-    "name": "test",
-    "description": "This is the test organization!",
-    "url": "http://test.com",
-    "updatedAt": "2011-12-13T11:03:15.000Z"
+    "_id": "4efa7fb7bc39b685e6000001",
+    "bio": "This is a new bio!",
+    "hash": "2d037f6a385d2874813417119d1be6f9",
+    "location": "The Future",
+    "nickname": "Testing Guy",
+    "updatedAt": "2011-12-28T03:05:45.898Z",
+    "score": 0
 }
-        </pre>
-    </div>
-    <div class="extra span4">
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User/:hash (DELETE)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Deletes the user with the given email md5 hash, <b>if it is the authenticated user.</b></h4>
+                </div>
+                <div class="api-arguments span7">
+                    No arguments.
+                </div>
+                <div class="api-notes extra span2">
+                    <h3>WARNING!</h3>
+                    <b>Using this method will delete the autheticated user!</b>
+                    <p>
+                        <b>Requires authentication/an existing session as the target user.</b>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="Sessions">
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Session (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Creates a new session.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Header: authorization</b></td>
+                                <td>string</td>
+                                <td>You may pass a standard HTTP Basic authorization in the appropriate header as a means of authentication. (<a href="http://en.wikipedia.org/wiki/Basic_access_authentication">http://en.wikipedia.org/wiki/Basic_access_authentication</a>)</td>
+                            </tr>
+                            <tr>
+                                <td><b>email</b></td>
+                                <td>string</td>
+                                <td>The email with which to authenticate.</td>
+                            </tr>
+                            <tr>
+                                <td><b>password</b></td>
+                                <td>string</td>
+                                <td>The password with which to authenticate.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example Request Body:</h6>
+                    <pre class="prettyprint">
+{
+    email: "test@test.com",
+    password: "testpass"
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>You must use either an HTTP authorization header or pass email/password as part of the JSON-encoded post body.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Session (DELETE)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Deletes the existing session.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    No arguments.
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires an existing session be active.</b>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="Contexts">
+            <div class="api-info span10 row">
+                Contexts are effectively containers for Achievement Classes.  You'll want to create a context
+                for each property you want to associate achievements with.  For instance, you might want to
+                create a Context for a video game, or a website, or your business.  You can associate information
+                like a url and an image with a context that will help users to identify it.
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Creates a new context.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>name</b></td>
+                                <td>string</td>
+                                <td>The context name.</td>
+                            </tr>
+                            <tr>
+                                <td><b>description</b></td>
+                                <td>string</td>
+                                <td>A description for the context.</td>
+                            </tr>
+                            <tr>
+                                <td><b>image</b></td>
+                                <td>string (url)</td>
+                                <td>A url for a context image. (Note: If you manage contexts through the web interface, we allow you to upload an image that we will host for you that this field will be set to.)</td>
+                            </tr>
+                            <tr>
+                                <td><b>url</b></td>
+                                <td>string (url)</td>
+                                <td>A url for the context.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example Request Body:</h6>
+                    <pre class="prettyprint">
+{
+    name: "Test Context",
+    description: "This is a test context.",
+    image: "http://testcontext.com/logo.png",
+    url: "http://testcontext.com/"
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as a user.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId (PUT)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Updates an existing context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>name</b></td>
+                                <td>string</td>
+                                <td>The context name.</td>
+                            </tr>
+                            <tr>
+                                <td><b>description</b></td>
+                                <td>string</td>
+                                <td>A description for the context.</td>
+                            </tr>
+                            <tr>
+                                <td><b>image</b></td>
+                                <td>string (url)</td>
+                                <td>A url for a context image.</td>
+                            </tr>
+                            <tr>
+                                <td><b>url</b></td>
+                                <td>string (url)</td>
+                                <td>A url for the context.</td>
+                            </tr>
+                            <tr>
+                                <td><b>owners</b></td>
+                                <td>array</td>
+                                <td>An array of email md5 hashes that have ownership permissions for the context.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example Request Body:</h6>
+                    <pre class="prettyprint">
+{
+    name: "New Context",
+    description: "This is a new context!",
+    image: "http://newcontext.com/logo.png",
+    url: "http://newcontext.com/",
+    owners: [ "2d037f6a385d2874813417119d1be6f9", "0a52192c48cf7c71dadc2202d068a8f9" ]
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                    <p>
+                    <h3>WARNING!</h3>
+                    The 'owners' field replaces the existing value, it does not append/remove from it.
+                    Therefore, you should be careful when sending this field that you set it to all
+                    owners you want to be able to control the context.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/Owners/:ownerHash (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Adds the owner specified by :ownerHash to the context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    No arguments.
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/Owners/:ownerHash (DELETE)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Removes the owner specified by :ownerHash from the context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    No arguments.
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Contexts (GET)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Retrieves a list of the contexts owned by the current user.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre class="prettyprint">
+[
+    {
+        "_id": "4efa7fc9bc39b685e6000002",
+        "description": "This is a new context!",
+        "image": "http://newcontext.com/logo.png",
+        "name": "New Context",
+        "updatedAt": "2012-01-17T13:41:35.750Z",
+        "url": "http://newcontext.com/",
+        "owners": [ "2d037f6a385d2874813417119d1be6f9", "0a52192c48cf7c71dadc2202d068a8f9"]
+    }
+]
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="span10">
+                    <h3>/api/1.0/Context/:contextId (GET)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Retrieves the context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre class="prettyprint">
+{
+    "_id": "4efa7fc9bc39b685e6000002",
+    "description": "This is a new context!",
+    "image": "http://newcontext.com/logo.png",
+    "name": "New Context",
+    "updatedAt": "2012-01-17T13:41:35.750Z",
+    "url": "http://newcontext.com/",
+    "owners": [ "2d037f6a385d2874813417119d1be6f9", "0a52192c48cf7c71dadc2202d068a8f9" ]
+}
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId (DELETE)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Deletes the context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    No arguments.
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/Image (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Uploads an image for the context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>contextImage</b></td>
+                                <td>file</td>
+                                <td>The image to be uploaded, encoded using multipart/form-data.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example (using jQuery + FormData):</h6>
+                    <pre class="prettyprint">
+var file = imageFileInput[ 0 ].files[ 0 ];
+var formData = new FormData();
+formData.append( 'contextImage', file );
+
+$.ajax({
+    url: apiServer + '/api/1.0/Context/' + contextId + '/Image',
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    type: 'POST',
+    success: function( updatedContext ) {
+        $( '#context-image' ).attr( 'src', updatedContext.image );
+    },
+    error: function( xhr ) {
+        console.log( xhr.responseText );
+    }
+});
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="AchievementClasses">
+            <div class="api-info span10 row">
+                Achievement Classes describe the types of achievements you'd like to give out within your context.
+                An 'Achievement' ends up effectively being an 'instance' of an Achievement Class.
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/AchievementClass (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Creates a new achievement class within the context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>name</b></td>
+                                <td>string</td>
+                                <td>The achievement class name.</td>
+                            </tr>
+                            <tr>
+                                <td><b>description</b></td>
+                                <td>string</td>
+                                <td>A description for the achievement class.</td>
+                            </tr>
+                            <tr>
+                                <td><b>image</b></td>
+                                <td>string (url)</td>
+                                <td>A url for an achievement class image.</td>
+                            </tr>
+                            <tr>
+                                <td><b>points</b></td>
+                                <td>integer</td>
+                                <td>A point value for the achievement class.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example Request Body:</h6>
+                    <pre class="prettyprint">
+{
+    name: "Test Achievement",
+    description: "This is a test achievement.",
+    image: "http://testcontext.com/achievements/test/image.png",
+    points: 10
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/AchievementClass/:achievementClassId (PUT)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Updates an existing achievement class specified by :achievementClassId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>name</b></td>
+                                <td>string</td>
+                                <td>The achievement class name.</td>
+                            </tr>
+                            <tr>
+                                <td><b>description</b></td>
+                                <td>string</td>
+                                <td>A description for the achievement class.</td>
+                            </tr>
+                            <tr>
+                                <td><b>image</b></td>
+                                <td>string (url)</td>
+                                <td>A url for an achievement class image.</td>
+                            </tr>
+                            <tr>
+                                <td><b>points</b></td>
+                                <td>integer</td>
+                                <td>A point value for the achievement class.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example Request Body:</h6>
+                    <pre class="prettyprint">
+{
+    name: "New Achievement",
+    description: "This is a new achievement.",
+    image: "http://testcontext.com/achievements/new/image.png",
+    points: 100
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="span10">
+                    <h3>/api/1.0/Context/:contextId/AchievementClass/:achievementClassId (GET)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Retrieves the achievement class specified by :achievementClassId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre class="prettyprint">
+{
+    "_id": "4f2c8b708e3145e1f6000005",
+    "contextId": "4efa7fc9bc39b685e6000002",
+    "description": "This is a new achievement.",
+    "image": "http://testcontext.com/achievements/new/image.png",
+    "name": "New Achievement",
+    "updatedAt": "2012-02-04T02:19:11.291Z",
+    "points": 100
+}
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/AchievementClass/:achievementClassId (DELETE)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Deletes the achievement class specified by :achievementClassId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    No arguments.
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/AchievementClass/:achievementClassId/Image (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Uploads an image for the achievment class specified by :achievementClassId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>achievementClassImage</b></td>
+                                <td>file</td>
+                                <td>The image to be uploaded, encoded using multipart/form-data.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h6>Example (Using jQuery + FormData)</h6>
+                    <pre class="prettyprint">
+var file = imageFileInput[ 0 ].files[ 0 ];
+var formData = new FormData();
+formData.append( 'achievementClassImage', file );
+
+$.ajax({
+    url: apiServer + '/api/1.0/Context/' + contextId + '/AchievementClass/' + achievementClassId + '/Image',
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    type: 'POST',
+    success: function( updatedAchievementClass ) {
+        $( '#achievementclass-image' ).attr( 'src', updatedAchievementClass.image );
+    },
+    error: function( xhr ) {
+        console.log( xhr.responseText );
+    }
+});
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/Context/:contextId/AchievementClasses (GET)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Retrieves a list of achievement classes for the context specified by :contextId.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre class="prettyprint">
+[
+    {
+        "_id": "4f2c8b708e3145e1f6000005",
+        "contextId": "4efa7fc9bc39b685e6000002",
+        "description": "This is a new achievement.",
+        "image": "http://testcontext.com/achievements/new/image.png",
+        "name": "New Achievement",
+        "updatedAt": "2012-02-04T02:19:11.291Z",
+        "points": 100
+    },
+    {
+        "_id": "4f2c8b708e3145e1f6000015",
+        "contextId": "4efa7fc9bc39b685e6000002",
+        "description": "This is a different achievement.",
+        "image": "http://testcontext.com/achievements/different/image.png",
+        "name": "Different Achievement",
+        "updatedAt": "2012-02-05T05:19:11.291Z",
+        "points": 1000
+    }    
+]
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="Achievements">
+            <div class="api-info span10 row">
+                Achievements are 'instances' of Achievement Classes which you can give to users.
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User/:hash/Context/:contextId/AchievementClass/:achievementClassId (POST)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Gives the user specified by email md5 :hash the given achievement class.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre>
+{
+    "_id":"4f30fc0de42f500000000008",
+    "updatedAt": "2012-02-07T10:25:17.000Z",
+    "classId": "4f2c8b708e3145e1f6000005",
+    "userHash": "2d037f6a385d2874813417119d1be6f9",
+    "contextId": "4efa7fc9bc39b685e6000002"
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User/:hash/Context/:contextId/AchievementClass/:achievementClassId (DELETE)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Removes the given achievement class from the user specified by email md5 :hash.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre>
+{
+    "removed": true
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User/:hash/Context/:contextId/Achievement/:achievementId (DELETE)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Removes the achievement specified by :achievementId from the user given by email md5 :hash.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre>
+{
+    "removed": true
+}
+                    </pre>
+                </div>
+                <div class="api-notes extra span2">
+                    <b>Requires authentication/an existing session as an owner of the given context.</b>
+                </div>
+            </div>
+            
+            <div class="span10 row">
+                <div class="api-url span10 bottomed">
+                    <h3>/api/1.0/User/:hash/Achievements/:contextId? (GET)</h3>
+                </div>
+                <div class="api-explanation span10">
+                    <h4>Gets the list of achievements for the user given the email md5 :hash.  Optionally takes a :contextId to limit the list to the given context.</h4>
+                </div>
+                <div class="api-arguments span7">
+                    <h6>Example Response:</h6>
+                    <pre>
+[
+    {
+        "_id":"4f30fc0de42f500000000008",
+        "updatedAt": "2012-02-07T10:25:17.000Z",
+        "classId": "4f2c8b708e3145e1f6000005",
+        "userHash": "2d037f6a385d2874813417119d1be6f9",
+        "contextId": "4efa7fc9bc39b685e6000002"
+    }
+]
+                    </pre>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="span10">
-        <h4>DELETE <small>Deletes the specified organization, if it is the authenticated organization.</small></h4>
-    </div>
-    <div class="extra span4">
-        <h3>WARNING!</h3>
-        <b>Using this method will delete the autheticated organization!</b>
-        <p>
-            <b>Requires Basic HTTP Authentication as the target organization.</b>
-        </p>
-    </div>
-</div>
+<script>
+    $(function () {
+        $('.nav-tabs a:first').tab('show');
+    })
+</script>
+
+
+
 

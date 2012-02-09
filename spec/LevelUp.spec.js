@@ -14,7 +14,7 @@ describe( 'Users', function() {
         var error = false;
         
         shred.post({
-          url: utils.levelUpUrl + '/User',
+          url: utils.levelUpUrl + '/api/1.0/User',
           headers: {
             content_type: 'application/json',
             accept: 'application/json'
@@ -65,7 +65,7 @@ describe( 'Users', function() {
         var result = null;
         
         shred.post({
-          url: utils.levelUpUrl + '/Session',
+          url: utils.levelUpUrl + '/api/1.0/Session',
           headers: {
             accept: 'application/json',
             authorization: utils.authString( testUserData )
@@ -107,7 +107,7 @@ describe( 'Users', function() {
         var result = null;
         
         shred.delete({
-          url: utils.levelUpUrl + '/Session',
+          url: utils.levelUpUrl + '/api/1.0/Session',
           headers: {
             accept: 'application/json'
           },
@@ -148,7 +148,7 @@ describe( 'Users', function() {
         var result = null;
         
         shred.post({
-          url: utils.levelUpUrl + '/Session',
+          url: utils.levelUpUrl + '/api/1.0/Session',
           headers: {
             accept: 'application/json',
             content_type: 'application/json'
@@ -191,7 +191,7 @@ describe( 'Users', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/User',
+          url: utils.levelUpUrl + '/api/1.0/User',
           headers: {
             accept: 'application/json',
             authorization: utils.authString( testUserData )
@@ -241,7 +241,7 @@ describe( 'Users', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/User/' + user.hash,
+          url: utils.levelUpUrl + '/api/1.0/User/' + user.hash,
           headers: {
             accept: 'application/json'
           },
@@ -290,7 +290,7 @@ describe( 'Users', function() {
         var updatedUser = null;
         
         shred.put({
-          url: utils.levelUpUrl + '/User',
+          url: utils.levelUpUrl + '/api/1.0/User',
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
@@ -360,7 +360,7 @@ describe( 'Contexts', function() {
         var error = false;
         
         shred.post({
-          url: utils.levelUpUrl + '/Context',
+          url: utils.levelUpUrl + '/api/1.0/Context',
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
@@ -410,7 +410,7 @@ describe( 'Contexts', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Context/' + context._id,
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id,
           headers: {
             accept: 'application/json'
           },
@@ -457,7 +457,7 @@ describe( 'Contexts', function() {
         var updatedContext = null;
         
         shred.put({
-          url: utils.levelUpUrl + '/Context/' + context._id,
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id,
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
@@ -516,7 +516,7 @@ describe( 'Contexts', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Contexts',
+          url: utils.levelUpUrl + '/api/1.0/Contexts',
           headers: {
             accept: 'application/json'
           },
@@ -581,7 +581,7 @@ describe( 'AchievementClasses', function() {
         var error = false;
         
         shred.post({
-          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass',
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/AchievementClass',
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
@@ -632,7 +632,7 @@ describe( 'AchievementClasses', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
           headers: {
             accept: 'application/json'
           },
@@ -680,7 +680,7 @@ describe( 'AchievementClasses', function() {
         var updatedAchievementClass = null;
         
         shred.put({
-          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
           headers: {
             content_type: 'application/json',
             accept: 'application/json',
@@ -738,7 +738,7 @@ describe( 'AchievementClasses', function() {
         var result = null;
         
         shred.get({
-          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClasses',
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/AchievementClasses',
           headers: {
             accept: 'application/json'
           },
@@ -803,7 +803,7 @@ describe( 'Achievements', function() {
         var error = false;
         
         shred.post({
-          url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement',
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/Achievement',
           headers: {
             content_type: 'application/json',
             accept: 'application/json'
@@ -860,7 +860,7 @@ describe( 'Achievements', function() {
 
         runs( function() {
             shred.get({
-              url: utils.levelUpUrl + '/User/' + utils.userHash( user ) + '/Achievements',
+              url: utils.levelUpUrl + '/api/1.0/User/' + utils.userHash( user ) + '/Achievements',
               headers: {
                 accept: 'application/json'
               },
@@ -912,7 +912,7 @@ describe( 'Achievements', function() {
 
         runs( function() {
             shred.delete({
-              url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement/' + achievement._id,
+              url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/Achievement/' + achievement._id,
               headers: {
                 content_type: 'application/json',
                 accept: 'application/json',
@@ -965,7 +965,7 @@ describe( 'Achievements', function() {
         
         runs( function() {
             shred.post({
-              url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement',
+              url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/Achievement',
               headers: {
                 content_type: 'application/json',
                 accept: 'application/json',
@@ -1024,7 +1024,7 @@ describe( 'Achievements', function() {
 
         runs( function() {
             shred.delete({
-              url: utils.levelUpUrl + '/Context/' + context._id + '/Achievement/' + achievementByClassName._id,
+              url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/Achievement/' + achievementByClassName._id,
               headers: {
                 content_type: 'application/json',
                 accept: 'application/json'
@@ -1075,7 +1075,7 @@ describe( 'Cleanup', function() {
         var error = false;
         
         shred.delete({
-          url: utils.levelUpUrl + '/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id + '/AchievementClass/' + achievementClass._id,
           headers: {
             accept: 'application/json',
             authorization: utils.authString( user )
@@ -1117,7 +1117,7 @@ describe( 'Cleanup', function() {
         var error = false;
         
         shred.delete({
-          url: utils.levelUpUrl + '/Context/' + context._id,
+          url: utils.levelUpUrl + '/api/1.0/Context/' + context._id,
           headers: {
             accept: 'application/json',
             authorization: utils.authString( user )
@@ -1159,7 +1159,7 @@ describe( 'Cleanup', function() {
         var result = null;
         
         shred.delete({
-          url: utils.levelUpUrl + '/User/' + user._id,
+          url: utils.levelUpUrl + '/api/1.0/User/' + user._id,
           headers: {
             accept: 'application/json'
           },

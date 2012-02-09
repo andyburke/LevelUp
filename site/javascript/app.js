@@ -84,7 +84,7 @@ var app = Sammy( function() {
         {
             $('#main').toggleLoading();
             $.ajax({
-                url: apiServer + '/User',
+                url: apiServer + '/api/1.0/User',
                 type: 'GET',
                 dataType: 'json',
                 success: function( data ) {
@@ -116,7 +116,7 @@ var app = Sammy( function() {
 
                 $( '#achievements' ).toggleLoading();
                 $.ajax({
-                    url: apiServer + '/User/' + user.hash + '/Achievements',
+                    url: apiServer + '/api/1.0/User/' + user.hash + '/Achievements',
                     type: 'GET',
                     dataType: 'json',
                     success: function( achievements ) {
@@ -147,7 +147,7 @@ var app = Sammy( function() {
                                 else
                                 {
                                     $.ajax({
-                                        url: apiServer + '/Context/' + achievement.contextId + '/AchievementClass/' + achievement.classId,
+                                        url: apiServer + '/api/1.0/Context/' + achievement.contextId + '/AchievementClass/' + achievement.classId,
                                         type: 'GET',
                                         dataType: 'json',
                                         success: function( achievementClass ) {
@@ -169,7 +169,7 @@ var app = Sammy( function() {
         }
         
         $.ajax({
-            url: apiServer + '/User/' + userHash,
+            url: apiServer + '/api/1.0/User/' + userHash,
             type: 'GET',
             dataType: 'json',
             success: function( user ) {
@@ -190,10 +190,11 @@ var app = Sammy( function() {
     });
 
     this.get( '#/ManageContexts', function () {
+        SetActivePage( 'managecontexts' );
         $( '#main' ).toggleLoading();
         
         $.ajax({
-            url: apiServer + '/Contexts',
+            url: apiServer + '/api/1.0/Contexts',
             type: 'GET',
             dataType: 'json',
             success: function( contexts ) {
@@ -245,7 +246,7 @@ var app = Sammy( function() {
                 if ( !cachedClasses )
                 {
                     $.ajax({
-                            url: apiServer + '/Context/' + context._id + '/AchievementClasses',
+                            url: apiServer + '/api/1.0/Context/' + context._id + '/AchievementClasses',
                             type: 'GET',
                             dataType: 'json',
                             success: function( classes ) {
@@ -266,7 +267,7 @@ var app = Sammy( function() {
                 $( '#ownerlist' ).toggleLoading();
                 renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
                     $.ajax({
-                        url: apiServer + '/Users',
+                        url: apiServer + '/api/1.0/Users',
                         type: 'POST',
                         data: JSON.stringify( { 'users': context.owners } ),
                         contentType: 'application/json',
@@ -291,7 +292,7 @@ var app = Sammy( function() {
         if ( !cachedContext )
         {
             $.ajax({
-                url: apiServer + '/Context/' + contextId,
+                url: apiServer + '/api/1.0/Context/' + contextId,
                 type: 'GET',
                 dataType: 'json',
                 success: function( context ) {
@@ -319,7 +320,7 @@ var app = Sammy( function() {
         if ( !cachedContext )
         {
             $.ajax({
-                url: apiServer + '/Context/' + contextId,
+                url: apiServer + '/api/1.0/Context/' + contextId,
                 type: 'GET',
                 dataType: 'json',
                 success: function( context ) {
@@ -352,7 +353,7 @@ var app = Sammy( function() {
         if ( !cachedContext )
         {
             $.ajax({
-                url: apiServer + '/Context/' + contextId,
+                url: apiServer + '/api/1.0/Context/' + contextId,
                 type: 'GET',
                 dataType: 'json',
                 success: function( context ) {
@@ -395,7 +396,7 @@ var app = Sammy( function() {
             if ( !cachedAchievementClass )
             {
                 $.ajax({
-                    url: apiServer + '/Context/' + contextId + '/AchievementClass/' + achievementClassId,
+                    url: apiServer + '/api/1.0/Context/' + contextId + '/AchievementClass/' + achievementClassId,
                     type: 'GET',
                     dataType: 'json',
                     success: function( achievementClass ) {
@@ -417,7 +418,7 @@ var app = Sammy( function() {
         if ( !cachedContext )
         {
             $.ajax({
-                url: apiServer + '/Context/' + contextId,
+                url: apiServer + '/api/1.0/Context/' + contextId,
                 type: 'GET',
                 dataType: 'json',
                 success: function( context ) {
@@ -440,7 +441,7 @@ var app = Sammy( function() {
 
 $(function() {
     $.ajax({
-        url: apiServer + '/User',
+        url: apiServer + '/api/1.0/User',
         type: 'GET',
         dataType: 'json',
         success: function( data ) {
@@ -454,9 +455,7 @@ $(function() {
         }
     });
     
-    $('.topbar').dropdown();
-    
-    app.run('#/');
+    app.run( '#/' );
 });
 
 function HandleAuthentication( resource, form )
@@ -470,7 +469,7 @@ function HandleAuthentication( resource, form )
     $(form).toggleLoading();
     
     $.ajax({
-        url: apiServer + '/' + resource,
+        url: apiServer + '/api/1.0/' + resource,
         type: 'POST',
         data: JSON.stringify({
             'email': email,
@@ -520,7 +519,7 @@ $('.button-signin').live( 'click', function( event ) {
 $('.button-signout').live( 'click', function( event ) {
     event.preventDefault();
     $.ajax({
-        url: apiServer + '/Session',
+        url: apiServer + '/api/1.0/Session',
         type: 'DELETE',
         success: function( data ) {
             currentUser = null;
@@ -577,7 +576,7 @@ $('.update-account-button').live( 'click', function( event ) {
         $(form).toggleLoading();
 
         $.ajax({
-            url: apiServer + '/User',
+            url: apiServer + '/api/1.0/User',
             type: 'PUT',
             data: JSON.stringify( toBeUpdated ),
             dataType: 'json',
@@ -625,7 +624,7 @@ $('.button-create-context').live( 'click', function( event ) {
     var description = $(form).find( '#description' ).val();
     
     $.ajax({
-        url: apiServer + '/Context',
+        url: apiServer + '/api/1.0/Context',
         type: 'POST',
         data: JSON.stringify({
             'name': name,
@@ -673,27 +672,11 @@ $('.update-context-button').live( 'click', function( event ) {
         {
             $( '#context-image' ).toggleLoading();
             
-            var onProgress = function( e ) {
-                if ( e.lengthComputable )
-                {
-                    var percentComplete = ( e.loaded / e.total ) * 100;
-                }
-            };
-            
-            var onReady = function( e ) {
-                // ready state
-                console.log( e );
-            };
-            
-            var onError = function( error ) {
-                console.log( error );
-            };
-            
             var formData = new FormData();
             formData.append( 'contextImage', file );
 
             $.ajax({
-                url: apiServer + '/Context/' + contextId + '/Image',
+                url: apiServer + '/api/1.0/Context/' + contextId + '/Image',
                 data: formData,
                 cache: false,
                 contentType: false,
@@ -737,7 +720,7 @@ $('.update-context-button').live( 'click', function( event ) {
         $(form).toggleLoading();
 
         $.ajax({
-            url: apiServer + '/Context/' + contextId,
+            url: apiServer + '/api/1.0/Context/' + contextId,
             type: 'PUT',
             data: JSON.stringify( toBeUpdated ),
             dataType: 'json',
@@ -794,7 +777,7 @@ $('.button-create-achievementclass').live( 'click', function( event ) {
     var description = $(form).find( '#description' ).val();
     
     $.ajax({
-        url: apiServer + '/Context/' + contextId + '/AchievementClass',
+        url: apiServer + '/api/1.0/Context/' + contextId + '/AchievementClass',
         type: 'POST',
         data: JSON.stringify({
             'name': name,
@@ -837,27 +820,11 @@ $('.update-achievementclass-button').live( 'click', function( event ) {
         {
             $( '#achievementclass-image' ).toggleLoading();
             
-            var onProgress = function( e ) {
-                if ( e.lengthComputable )
-                {
-                    var percentComplete = ( e.loaded / e.total ) * 100;
-                }
-            };
-            
-            var onReady = function( e ) {
-                // ready state
-                console.log( e );
-            };
-            
-            var onError = function( error ) {
-                console.log( error );
-            };
-            
             var formData = new FormData();
             formData.append( 'achievementClassImage', file );
 
             $.ajax({
-                url: apiServer + '/Context/' + contextId + '/AchievementClass/' + achievementClassId + '/Image',
+                url: apiServer + '/api/1.0/Context/' + contextId + '/AchievementClass/' + achievementClassId + '/Image',
                 data: formData,
                 cache: false,
                 contentType: false,
@@ -895,7 +862,7 @@ $('.update-achievementclass-button').live( 'click', function( event ) {
         $(form).toggleLoading();
 
         $.ajax({
-            url: apiServer + '/Context/' + contextId + '/AchievementClass/' + achievementClassId,
+            url: apiServer + '/api/1.0/Context/' + contextId + '/AchievementClass/' + achievementClassId,
             type: 'PUT',
             data: JSON.stringify( toBeUpdated ),
             dataType: 'json',
@@ -951,7 +918,7 @@ $('.add-context-owner-button').live( 'click', function( event ) {
     var hash = Crypto.MD5( $( form ).find( '#newowner' ).val().trim().toLowerCase() );
 
     $.ajax({
-        url: apiServer + '/Context/' + contextId + '/Owners/' + hash,
+        url: apiServer + '/api/1.0/Context/' + contextId + '/Owners/' + hash,
         type: 'POST',
         dataType: 'json',
         success: function( context ) {
@@ -964,7 +931,7 @@ $('.add-context-owner-button').live( 'click', function( event ) {
             $( '#ownerlist' ).toggleLoading();
             renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
                 $.ajax({
-                    url: apiServer + '/Users',
+                    url: apiServer + '/api/1.0/Users',
                     type: 'POST',
                     data: JSON.stringify( { 'users': context.owners } ),
                     contentType: 'application/json',
@@ -1004,7 +971,7 @@ $('.remove-context-owner-link').live( 'click', function( event ) {
             $( '#ownerlist' ).toggleLoading();
             renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
                 $.ajax({
-                    url: apiServer + '/Users',
+                    url: apiServer + '/api/1.0/Users',
                     type: 'POST',
                     data: JSON.stringify( { 'users': context.owners } ),
                     contentType: 'application/json',
@@ -1040,7 +1007,7 @@ $('.grant-achievement-button').live( 'click', function( event ) {
     var hash = Crypto.MD5( $( form ).find( '#target' ).val().trim().toLowerCase() );
 
     $.ajax({
-        url: apiServer + '/User/' + hash + '/Context/' + contextId + '/AchievementClass/' + achievementClassId,
+        url: apiServer + '/api/1.0/User/' + hash + '/Context/' + contextId + '/AchievementClass/' + achievementClassId,
         type: 'POST',
         dataType: 'json',
         success: function( context ) {

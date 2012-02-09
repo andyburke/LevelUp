@@ -2,51 +2,51 @@
     <h1><a href="/#/ManageContext/{{context._id}}">{{context.name}}</a> &gt; {{class.name}}</h1>
 </div>
 <div class="row">
-    <div class="span8">
+    <div class="span7">
         <div id="achievementclass-image-container">
             <img id="achievementclass-image" src="{{class.image}}" width="200" height="200" />
         </div>
-        <form>
+        <form class="form-horizontal">
             <fieldset>
-                <div class="clearfix">
-                    <div class="input">
+                <div class="control-group">
+                    <div class="controls">
                         <input type="file" name="image-file" id="image-file" />
                     </div>
                 </div>
-                <div class="clearfix">
+                <div class="control-group">
                   <label>Unique ID</label>
-                  <div class="input">
-                    <input class="span5 disabled" id="id" name="id" type="text" value="{{class._id}}" disabled />
+                  <div class="controls">
+                    <input class="input-xlarge disabled" id="id" name="id" type="text" value="{{class._id}}" disabled />
                   </div>
                 </div><!-- /clearfix -->
-                <div class="clearfix">
+                <div class="control-group">
                   <label for="name">Name</label>
-                  <div class="input">
-                    <input class="span5" id="name" name="name" type="text" value="{{class.name}}" />
+                  <div class="controls">
+                    <input class="input-xlarge" id="name" name="name" type="text" value="{{class.name}}" />
                   </div>
                 </div><!-- /clearfix -->
-                <div class="clearfix">
+                <div class="control-group">
                   <label for="textarea">Description</label>
-                  <div class="input">
-                    <textarea class="span5" id="description" name="description" rows="3">{{class.description}}</textarea>
+                  <div class="controls">
+                    <textarea class="input-xlarge" id="description" name="description" rows="3">{{class.description}}</textarea>
                   </div>
                 </div><!-- /clearfix -->
                 <input type="hidden" id="contextId" name="contextId" value="{{context._id}}" />
-                <div class="actions">
-                    <button class="btn primary update-achievementclass-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-achievementclass-button">Reset</button>
+                <div class="form-actions">
+                    <button class="btn btn-primary update-achievementclass-button" data-loading-text="Updating..." data-complete-text="Updated!">Update</button>&nbsp;<button type="reset" class="btn reset-achievementclass-button">Reset</button>
                 </div>
             </fieldset>
         </form>
     </div>
-    <div class="span5">
+    <div class="span4 extra">
         You can use this to grant this achievement to a given email address:
         <p>
         <div class="pull-right">
-            <form>
+            <form class="form-horizontal">
                 <input type="hidden" id="contextId" name="contextId" value="{{context._id}}"/>
                 <input type="hidden" id="achievementClassId" name="achievementClassId" value="{{class._id}}"/>
-                <input class="span3" type="test" id="target" name="target" placeholder="Enter target email"/>
-                <button class="btn primary grant-achievement-button" data-loading-text="Granting..." data-complete-text="Granted!">Grant</button>
+                <input class="input-large" type="test" id="target" name="target" placeholder="Enter target email"/>
+                <button class="btn btn-primary grant-achievement-button" data-loading-text="Granting..." data-complete-text="Granted!">Grant</button>
             </form>
         </div>
     </div>

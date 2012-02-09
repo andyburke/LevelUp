@@ -2,23 +2,23 @@
     <h1>{{user.nickname}}</h1>
 </div>
 <div class="row">
-    <div class="span5">
+    <div class="span4">
         <img src="http://www.gravatar.com/avatar/{{user.hash}}?s=256&d=mm">
         <p>
         <h1>Web Score: {{user.score}}</h1>
     </div>
     <div class="span8">
-        <form>
+        <form class="form-horizontal">
           <fieldset>
-            <div class="clearfix">
-              <label for="location">Location</label>
-              <div class="input">
+            <div class="control-group">
+              <label class="form-label" for="location">Location</label>
+              <div class="controls">
                 <input class="span5 disabled" id="location" name="location" type="text" value="{{user.location}}" disabled/>
               </div>
             </div><!-- /clearfix -->
-            <div class="clearfix">
-              <label for="textarea">Bio</label>
-              <div class="input">
+            <div class="control-group">
+              <label class="form-label" for="textarea">Bio</label>
+              <div class="controls">
                 <textarea class="span5 disabled" id="bio" name="bio" rows="3" disabled>{{user.bio}}</textarea>
               </div>
             </div><!-- /clearfix -->
@@ -27,11 +27,11 @@
     </div>
 </div>
 <div class="row">
-    <div class="span13">
+    <div class="span12">
         <h1>Achievements</h1>
     </div>
 </div>
 <div class="row">
-    <div id="achievements" class="span13">
+    <div id="achievements" class="span12">
     </div>
 </div>

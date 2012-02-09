@@ -6,31 +6,29 @@
 
     <title>LevelUp</title>
 
-    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet/less" type="text/css" href="/css/main.less">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-dropdown.js" type="text/javascript"></script>
-    <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-buttons.js" type="text/javascript"></script>
     <script src="http://crypto-js.googlecode.com/files/2.3.0-crypto-md5.js" type="text/javascript"></script>
-    <script src="javascript/lib/activity-indicator.js" type="text/javascript"></script>
-    <script src="javascript/lib/jquery.loading.min.js" type="text/javascript"></script>
-    <script src="javascript/lib/sammy-latest.min.js" type="text/javascript"></script>
-    <script src="javascript/lib/mustache.js" type="text/javascript"></script>
-    <script src="javascript/lib/less.js" type="text/javascript"></script>
-    <script src="javascript/app.js" type="text/javascript"></script>
+    <script src="/javascript/lib/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/javascript/lib/jquery.loading.min.js" type="text/javascript"></script>
+    <script src="/javascript/lib/sammy-latest.min.js" type="text/javascript"></script>
+    <script src="/javascript/lib/mustache.js" type="text/javascript"></script>
+    <script src="/javascript/lib/less.js" type="text/javascript"></script>
+    <script src="/javascript/app.js" type="text/javascript"></script>
 
 </head>
 
 <body>
-    <div class="topbar">
-        <div class="fill">
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
             <div class="container">
                 <a class="brand" href="#/">LevelUp.io</a>
                 <ul class="nav">
                     <li class="navItem active" id="nav-about"><a href="#/">About</a></li>
                     <li class="navItem dropdown">
-                        <a href="#" class="dropdown-toggle">Developers</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Developers</a>
                         <ul class="dropdown-menu">
                             <li><a class="navItem authenticated" id="nav-managecontexts" href="#/ManageContexts">Manage Contexts</a></li>
                             <li><a class="navItem" id="nav-api" href="#/API">API Documentation</a></li>
@@ -39,12 +37,12 @@
                     <li class="navItem unauthenticated" id="nav-signup"><a href="#/SignUp">Sign Up!</a></li>
                     <li class="navItem authenticated" id="nav-myaccount"><a href="#/MyAccount">My Account</a></li>
                 </ul>
-                <form id="topbar-signin-form" action="" class="pull-right unauthenticated">
-                  <input class="input-small" type="text" name="email" placeholder="Email">
-                  <input class="input-small" type="password" name="password" placeholder="Password">
+                <form id="topbar-signin-form" class="navbar-form pull-right form-inline unauthenticated">
+                  <input class="input-medium" type="text" name="email" placeholder="Email">
+                  <input class="input-medium" type="password" name="password" placeholder="Password">
                   <button class="btn button-signin" type="submit">Sign In</button>
                 </form>
-                <form id="topbar-signout-form" action="" class="pull-right authenticated">
+                <form id="topbar-signout-form" class="navbar-form pull-right form-inline authenticated">
                     <button id="topbar-signout-button" class="btn pull-right button-signout" type="submit">Sign Out</button>
                 </form>
             </div>

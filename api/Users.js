@@ -11,7 +11,7 @@ var censoredFields = {
 };
 
 exports.bindToApp = function( app ) {
-    app.post( '/User', function( request, response ) {
+    app.post( '/api/1.0/User', function( request, response ) {
 
         if ( !request.param( 'email') || !request.param( 'password' ) )
         {
@@ -56,7 +56,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.put( '/User', checks.user, function( request, response ) {
+    app.put( '/api/1.0/User', checks.user, function( request, response ) {
 
         function save()
         {
@@ -135,13 +135,13 @@ exports.bindToApp = function( app ) {
         }
     });
     
-    app.get( '/User', checks.user, function( request, response ) {
+    app.get( '/api/1.0/User', checks.user, function( request, response ) {
         // the request.session.user is just a bare hash, no longer a mongoose model, so we need to use
         // models.censor vs. the member function
         response.json( models.censor( request.session.user, { 'passwordHash': true } ) );
     });
     
-    app.post( '/Users', function( request, response ) {
+    app.post( '/api/1.0/Users', function( request, response ) {
         var hashList = request.param( 'users' );
         
         models.User.find( { 'hash': { $in: hashList } }, function( error, users ) {
@@ -162,7 +162,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.get( '/User/:hash', function( request, response ) {
+    app.get( '/api/1.0/User/:hash', function( request, response ) {
         models.User.findOne( { 'hash': request.params.hash }, function( error, user ) {
             if ( error )
             {
@@ -180,14 +180,8 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/User/:userId', checks.user, function( request, response ) {
-        if ( request.session.user._id != request.params.userId )
-        {
-            response.json( 'Unauthorized', 401 );
-            return;
-        }
-        
-        models.User.findById( request.params.userId, function( error, user ) {
+    app.del( '/api/1.0/User/:hash', checks.user, function( request, response ) {
+        models.User.findOne( { 'hash': request.params.hash }, function( error, user ) {
             if ( error )
             {
                 response.json( error, 500 );
@@ -196,9 +190,13 @@ exports.bindToApp = function( app ) {
 
             if ( !user )
             {
-                // this isn't a 404, since they have a user session.  This case
-                // indicates some internal system error.
-                response.json( 'Could not locate the existing user.', 500 );
+                response.json( 'Could not locate a user with hash: ' + request.params.hash, 404 );
+                return;
+            }
+            
+            if ( !request.session.user._id.equals( user._id ) )
+            {
+                response.json( 'Unauthorized', 401 );
                 return;
             }
             
