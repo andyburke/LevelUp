@@ -1,3 +1,5 @@
 node_modules
 .monitor
 site/images/contexts/
+.DS_Store
+

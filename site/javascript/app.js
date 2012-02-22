@@ -124,25 +124,25 @@ var app = Sammy( function() {
                         renderTemplate( '#achievements', '/templates/achievementlist.mustache', { 'achievements': achievements }, function () {
                             $( '#achievements' ).toggleLoading();
 
-                            for ( var index = 0; index < achievements.length; ++index )
+                            function RenderAchievementClass( achievementClass )
                             {
-                                var achievement = achievements[ index ];
-                                var achievementDiv = $( '#' + achievement._id );
-                                achievementDiv.toggleLoading();
-                                
-                                function renderAchievement( achievementClass )
-                                {
-                                    achievementDiv.find( '.context-link' ).attr( 'href', '#/Context/' + achievementClass.contextId );
-                                    achievementDiv.find( '.achievement-image' ).attr( 'src', achievementClass.image );
-                                    achievementDiv.find( '.achievement-name' ).html( achievementClass.name );
-                                    achievementDiv.find( '.achievement-description' ).html( achievementClass.description );
-                                    achievementDiv.find( '.achievement-points' ).html( achievementClass.points );
-                                    achievementDiv.toggleLoading();
-                                }
+                                $( '.achievement-class-' + achievementClass._id ).each( function( element ) {
+                                    element.find( '.context-link' ).attr( 'href', '#/Context/' + achievementClass.contextId );
+                                    element.find( '.achievement-image' ).attr( 'src', achievementClass.image );
+                                    element.find( '.achievement-name' ).html( achievementClass.name );
+                                    element.find( '.achievement-description' ).html( achievementClass.description );
+                                    element.find( '.achievement-points' ).html( achievementClass.points );
+                                    element.toggleLoading();
+                                });
+                            }
+                            
+                            function GetAndRenderAchievement( achievement )
+                            {
+                                $( '.achievement-class-' + achievement.classId ).toggleLoading();
                                 
                                 if ( g_AchievementClassCache[ achievement.classId ] )
                                 {
-                                    renderAchievement( g_AchievementClassCache[ achievement.classId ] );
+                                    RenderAchievementClass( g_AchievementClassCache[ achievement.classId ] );
                                 }
                                 else
                                 {
@@ -151,13 +151,19 @@ var app = Sammy( function() {
                                         type: 'GET',
                                         dataType: 'json',
                                         success: function( achievementClass ) {
-                                            renderAchievement( achievementClass );
+                                            g_AchievementClassCache[ achievementClass._id ] = achievementClass;
+                                            RenderAchievementClass( achievementClass );
                                         },
                                         error: function( response, status, error ) {
-                                            achievementDiv.toggleLoading();  
+                                            $( '.achievement-class-' + achievement.classId ).toggleLoading();
                                         }
                                     });
                                 }
+                            }
+                            
+                            for ( var index = 0; index < achievements.length; ++index )
+                            {
+                                GetAndRenderAchievement( achievements[ index ] );
                             }
                         });
                     },
