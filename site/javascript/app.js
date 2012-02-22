@@ -126,14 +126,13 @@ var app = Sammy( function() {
 
                             function RenderAchievementClass( achievementClass )
                             {
-                                $( '.achievement-class-' + achievementClass._id ).each( function( element ) {
-                                    element.find( '.context-link' ).attr( 'href', '#/Context/' + achievementClass.contextId );
-                                    element.find( '.achievement-image' ).attr( 'src', achievementClass.image );
-                                    element.find( '.achievement-name' ).html( achievementClass.name );
-                                    element.find( '.achievement-description' ).html( achievementClass.description );
-                                    element.find( '.achievement-points' ).html( achievementClass.points );
-                                    element.toggleLoading();
-                                });
+                                var element = $( '.achievement-class-' + achievementClass._id );
+                                element.find( '.context-link' ).attr( 'href', '#/Context/' + achievementClass.contextId );
+                                element.find( '.achievement-image' ).attr( 'src', achievementClass.image );
+                                element.find( '.achievement-name' ).html( achievementClass.name );
+                                element.find( '.achievement-description' ).html( achievementClass.description );
+                                element.find( '.achievement-points' ).html( achievementClass.points );
+                                element.toggleLoading();
                             }
                             
                             function GetAndRenderAchievement( achievement )
