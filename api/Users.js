@@ -6,8 +6,7 @@ var md5 = require( 'MD5' );
 
 var censoredFields = {
     'email': true,
-    'passwordHash': true,
-    'apiSecret': true
+    'passwordHash': true
 };
 
 exports.bindToApp = function( app ) {
@@ -155,7 +154,7 @@ exports.bindToApp = function( app ) {
             var result = [];
             for ( var index = 0; index < users.length; ++index )
             {
-                result.push( users[ index ].censored( { 'email': true, 'passwordHash': true, 'apiSecret': true } ) );
+                result.push( users[ index ].censored( { 'email': true, 'passwordHash': true } ) );
             }
             
             response.json( result );
@@ -176,7 +175,7 @@ exports.bindToApp = function( app ) {
                 return;
             }
             
-            response.json( user.censored( { 'email': true, 'passwordHash': true, 'apiSecret': true } ) );
+            response.json( user.censored( { 'email': true, 'passwordHash': true } ) );
         });
     });
     

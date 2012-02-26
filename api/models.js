@@ -4,6 +4,7 @@ MongooseTypes.loadTypes( mongoose );
 var UseTimestamps = MongooseTypes.useTimestamps;
 
 var sha1 = require( 'sha1' );
+var crypto = require( 'crypto' );
 
 // TODO: make this be on the mongoose model prototype
 var censor = exports.censor = function ( object, fields )
@@ -24,10 +25,14 @@ exports.ContextSchema = new mongoose.Schema({
     description: { type: String },
     image: { type: String },
     url: { type: String },
-    owners: { type: Array, index: true }
+    owners: { type: Array, index: true },
+    apiKey: { type:String, index: true }
 });
 exports.ContextSchema.plugin( UseTimestamps );
 exports.Context = mongoose.model( 'Context', exports.ContextSchema );
+exports.Context.prototype.resetAPIKey = function() {
+    this.apiKey = sha1( crypto.randomBytes( 1024 ).toString() );
+};
 
 exports.AchievementClassSchema = new mongoose.Schema({
     contextId: { type: mongoose.Schema.ObjectId, index: true },
@@ -50,7 +55,6 @@ exports.Achievement = mongoose.model( 'Achievement', exports.AchievementSchema )
 exports.UserSchema = new mongoose.Schema({
     hash: { type: String, unique: true },
     email: { type: String, index: true },
-    apiSecret: { type: String },
     passwordHash: { type: String },
     nickname: { type: String, index: true },
     bio: { type: String },
@@ -59,7 +63,4 @@ exports.UserSchema = new mongoose.Schema({
 });
 exports.UserSchema.plugin( UseTimestamps );
 exports.User = mongoose.model( 'User', exports.UserSchema );
-exports.User.prototype.updateApiSecret = function() {
-    this.apiSecret = sha1( 'SO SECRET!' + this.email + this.passwordHash + new Date() );      
-};
 exports.User.prototype.censored = function( fields ) { return censor( this, fields ); };

@@ -13,6 +13,7 @@ exports.bindToApp = function( app ) {
         newContext.description = request.param( 'description' );
         newContext.image = request.param( 'image' );
         newContext.url = request.param( 'url' );
+        newContext.resetAPIKey();
     
         newContext.save( function( error ) {
             if ( error )
@@ -25,7 +26,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.put( '/api/1.0/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
+    app.put( '/api/1.0/Context/:contextId', checks.user, checks.contextPermission, function( request, response ) {
         request.context.name = request.param( 'name' ) != undefined ? request.param( 'name' ) : request.context.name;
         request.context.description = request.param( 'description' ) != undefined ? request.param( 'description' ) : request.context.description;
         request.context.image = request.param( 'image' ) != undefined ? request.param( 'image' ) : request.context.image;
@@ -57,11 +58,18 @@ exports.bindToApp = function( app ) {
                 return;
             }
             
-            response.json( context );        
+            var censoredFields = {};
+            if ( !request.session.user || context.owners.indexOf( request.session.user.hash ) == -1 )
+            {
+                censoredFields[ 'apiKey' ] = true;
+                censoredFields[ 'owners' ] = true;
+            }
+            
+            response.json( models.censor( context, censoredFields ) );
         });
     });
     
-    app.del( '/api/1.0/Context/:contextId', checks.user, checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/Context/:contextId', checks.contextPermission, function( request, response ) {
         request.context.remove( function( error ) {
             if ( error )
             {
@@ -73,7 +81,20 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.post( '/api/1.0/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
+    app.post( '/api/1.0/Context/:contextId/ResetAPIKey', checks.contextPermission, function( request, response ) {
+        request.context.resetAPIKey();
+        request.context.save( function( error ) {
+            if ( error )
+            {
+                response.json( error, 500 );
+                return;
+            }
+            
+            response.json( request.context );
+        });
+    });
+    
+    app.post( '/api/1.0/Context/:contextId/Image', checks.contextPermission, function( request, response ) {
         if ( !request.files.contextImage )
         {
             response.json( 'You must upload one file (no more, no less) to this url with a part id of "contextImage".', 400 );
@@ -111,7 +132,7 @@ exports.bindToApp = function( app ) {
         });
     });
 
-    app.del( '/api/1.0/Context/:contextId/Image', checks.user, checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/Context/:contextId/Image', checks.contextPermission, function( request, response ) {
         // TODO: delete file from disk
         // TODO: unset context image url
         response.json( 'Not implemented.', 500 );
@@ -129,7 +150,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.post( '/api/1.0/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
+    app.post( '/api/1.0/Context/:contextId/Owners/:ownerHash', checks.contextPermission, function( request, response ) {
         request.context.owners.push( request.params.ownerHash );
         request.context.save( function( error ) {
             if ( error )
@@ -142,7 +163,7 @@ exports.bindToApp = function( app ) {
         });
     });
     
-    app.del( '/api/1.0/Context/:contextId/Owners/:ownerHash', checks.user, checks.ownsContext, function( request, response ) {
+    app.del( '/api/1.0/Context/:contextId/Owners/:ownerHash', checks.contextPermission, function( request, response ) {
         if ( request.context.owners.indexOf( request.params.ownerHash ) != -1 )
         {
             request.context.owners.splice( request.context.owners.indexOf( request.params.ownerHash ), 1 );

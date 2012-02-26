@@ -82,18 +82,18 @@ var app = Sammy( function() {
         SetActivePage( 'myaccount' );
         if ( !currentUser )
         {
-            $('#main').toggleLoading();
+            $('#main').spin( 'large' );
             $.ajax({
                 url: apiServer + '/api/1.0/User',
                 type: 'GET',
                 dataType: 'json',
                 success: function( data ) {
-                    $('#main').toggleLoading();
+                    $('#main').spin( false );
                     currentUser = data;
                     renderTemplate( '#main', '/templates/myaccount.mustache', currentUser );
                 },
                 error: function( response, status, error ) {
-                    $('#main').toggleLoading();
+                    $('#main').spin( false );
                     console.log( error );
                 }
             });
@@ -105,16 +105,16 @@ var app = Sammy( function() {
     });
     
     this.get( '#/User/:hash', function() {
-        $('#main').toggleLoading();
+        $('#main').spin( 'large' );
 
         var userHash = this.params[ 'hash' ];
         
         function render( user )
         {
             renderTemplate( '#main', '/templates/user.mustache', { 'user': user }, function() {
-                $( '#main' ).toggleLoading();
+                $( '#main' ).spin( false );
 
-                $( '#achievements' ).toggleLoading();
+                $( '#achievements' ).spin( 'medium' );
                 $.ajax({
                     url: apiServer + '/api/1.0/User/' + user.hash + '/Achievements',
                     type: 'GET',
@@ -122,7 +122,7 @@ var app = Sammy( function() {
                     success: function( achievements ) {
                         
                         renderTemplate( '#achievements', '/templates/achievementlist.mustache', { 'achievements': achievements }, function () {
-                            $( '#achievements' ).toggleLoading();
+                            $( '#achievements' ).spin( false );
 
                             function RenderAchievementClass( achievementClass )
                             {
@@ -132,12 +132,12 @@ var app = Sammy( function() {
                                 element.find( '.achievement-name' ).html( achievementClass.name );
                                 element.find( '.achievement-description' ).html( achievementClass.description );
                                 element.find( '.achievement-points' ).html( achievementClass.points );
-                                element.toggleLoading();
+                                element.spin( 'false' );
                             }
                             
                             function GetAndRenderAchievement( achievement )
                             {
-                                $( '.achievement-class-' + achievement.classId ).toggleLoading();
+                                $( '.achievement-class-' + achievement.classId ).spin( 'small' );
                                 
                                 if ( g_AchievementClassCache[ achievement.classId ] )
                                 {
@@ -154,7 +154,7 @@ var app = Sammy( function() {
                                             RenderAchievementClass( achievementClass );
                                         },
                                         error: function( response, status, error ) {
-                                            $( '.achievement-class-' + achievement.classId ).toggleLoading();
+                                            $( '.achievement-class-' + achievement.classId ).spin( false );
                                         }
                                     });
                                 }
@@ -167,7 +167,7 @@ var app = Sammy( function() {
                         });
                     },
                     error: function( response, status, error ) {
-                        $( '#achievements' ).toggleLoading();
+                        $( '#achievements' ).spin( false );
                     }
                 });
             });
@@ -187,7 +187,7 @@ var app = Sammy( function() {
                 }
                 else
                 {
-                    $( '#main' ).toggleLoading();
+                    $( '#main' ).spin( false );
                     console.log( error );
                 }
             }
@@ -196,7 +196,7 @@ var app = Sammy( function() {
 
     this.get( '#/ManageContexts', function () {
         SetActivePage( 'managecontexts' );
-        $( '#main' ).toggleLoading();
+        $( '#main' ).spin( 'large' );
         
         $.ajax({
             url: apiServer + '/api/1.0/Contexts',
@@ -210,25 +210,25 @@ var app = Sammy( function() {
                 }
                 
                 renderTemplate( '#main', '/templates/managecontexts.mustache', { 'contexts': contexts }, function() {
-                    $( '#main' ).toggleLoading();
+                    $( '#main' ).spin( false );
                 });
             },
             error: function( response, status, error ) {
-                $( '#main' ).toggleLoading();
+                $( '#main' ).spin( false );
                 console.log( error );
             }
         })
     });
     
     this.get( '#/CreateContext', function() {
-        $( '#main' ).toggleLoading();
+        $( '#main' ).spin( 'large' );
         renderTemplate( '#main', '/templates/createcontext.mustache', null, function () {
-            $( '#main' ).toggleLoading();
+            $( '#main' ).spin( false );
         });
     });
     
     this.get( '#/ManageContext/:contextId', function () {
-        $( '#main' ).toggleLoading();
+        $( '#main' ).spin( 'large' );
         
         var contextId = this.params[ 'contextId' ];
         var cachedContext = g_ContextCache[ contextId ];
@@ -237,16 +237,16 @@ var app = Sammy( function() {
         function renderAchievementClasses( context, classes )
         {
             renderTemplate( '#achievementclasses', '/templates/achievementclasslist.mustache', { 'context': context, 'classes': classes }, function () {
-                $( '#achievementclasses' ).toggleLoading();                
+                $( '#achievementclasses' ).spin( false );                
             });
         }
 
         function renderContext( context )
         {
             renderTemplate( '#main', '/templates/managecontext.mustache', context, function() {
-                $( '#main' ).toggleLoading();
+                $( '#main' ).spin( false );
                 
-                $( '#achievementclasses' ).toggleLoading();
+                $( '#achievementclasses' ).spin( 'medium' );
                 
                 if ( !cachedClasses )
                 {
@@ -259,7 +259,7 @@ var app = Sammy( function() {
                                 renderAchievementClasses( context, classes );
                             },
                             error: function( response, status, error ) {
-                                $( '#achievementclasses' ).toggleLoading();
+                                $( '#achievementclasses' ).spin( false );
                                 console.log( error );
                             }
                     });
@@ -269,7 +269,7 @@ var app = Sammy( function() {
                     renderAchievementClasses( context, cachedClasses );
                 }
                 
-                $( '#ownerlist' ).toggleLoading();
+                $( '#ownerlist' ).spin( 'small' );
                 renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
                     $.ajax({
                         url: apiServer + '/api/1.0/Users',
@@ -282,10 +282,10 @@ var app = Sammy( function() {
                             {
                                 $( '#' + owners[ index ].hash + '-nickname' ).html( owners[ index ].nickname );
                             }
-                            $( '#ownerlist' ).toggleLoading(); 
+                            $( '#ownerlist' ).spin( false ); 
                         },
                         error: function( response, status, error ) {
-                            $( '#ownerlist' ).toggleLoading();
+                            $( '#ownerlist' ).spin( false );
                             console.log( error );
                         }
                     });
@@ -305,7 +305,7 @@ var app = Sammy( function() {
                     renderContext( context );
                 },
                 error: function( response, status, error ) {
-                    $( '#main' ).toggleLoading();
+                    $( '#main' ).spin( false );
                     console.log( error );
                 }
             });
@@ -317,7 +317,7 @@ var app = Sammy( function() {
     });
 
     this.get( '#/Context/:contextId', function () {
-        $( '#main' ).toggleLoading();
+        $( '#main' ).spin( 'large' );
 
         var contextId = this.params[ 'contextId' ];
         var cachedContext = g_ContextCache[ contextId ];
@@ -331,11 +331,11 @@ var app = Sammy( function() {
                 success: function( context ) {
                     g_ContextCache[ context._id ] = context;
                     renderTemplate( '#main', '/templates/context.mustache', { 'context': context }, function () {
-                        $( '#main' ).toggleLoading();
+                        $( '#main' ).spin( false );
                     });
                 },
                 error: function( response, status, error ) {
-                    $( '#main' ).toggleLoading();
+                    $( '#main' ).spin( false );
                     console.log( error );
                 }
             });
@@ -343,14 +343,14 @@ var app = Sammy( function() {
         else
         {
             renderTemplate( '#main', '/templates/context.mustache', { 'context': cachedContext }, function () {
-                $( '#main' ).toggleLoading();
+                $( '#main' ).spin( false );
             });
         }
     });
 
 
     this.get( '#/Context/:contextId/CreateAchievementClass', function () {
-        $( '#main' ).toggleLoading();
+        $( '#main' ).spin( 'large' );
 
         var contextId = this.params[ 'contextId' ];
         var cachedContext = g_ContextCache[ contextId ];
@@ -364,11 +364,11 @@ var app = Sammy( function() {
                 success: function( context ) {
                     g_ContextCache[ context._id ] = context;
                     renderTemplate( '#main', '/templates/createachievementclass.mustache', { 'context': context }, function () {
-                        $( '#main' ).toggleLoading();
+                        $( '#main' ).spin( false );
                     });
                 },
                 error: function( response, status, error ) {
-                    $( '#main' ).toggleLoading();
+                    $( '#main' ).spin( false );
                     console.log( error );
                 }
             });
@@ -376,13 +376,13 @@ var app = Sammy( function() {
         else
         {
             renderTemplate( '#main', '/templates/createachievementclass.mustache', { 'context': cachedContext }, function () {
-                $( '#main' ).toggleLoading();
+                $( '#main' ).spin( false );
             });
         }
     });
 
     this.get( '#/Context/:contextId/ManageAchievementClass/:achievementClassId', function () {
-        $( '#main' ).toggleLoading();
+        $( '#main' ).spin( 'large' );
         
         var contextId = this.params[ 'contextId' ];
         var cachedContext = g_ContextCache[ contextId ];
@@ -392,7 +392,7 @@ var app = Sammy( function() {
         function gotAchievementClass()
         {
             renderTemplate( '#main', '/templates/manageachievementclass.mustache', { 'context': cachedContext, 'class': cachedAchievementClass }, function() {
-                $( '#main' ).toggleLoading(); 
+                $( '#main' ).spin( false ); 
             });
         }
         
@@ -409,7 +409,7 @@ var app = Sammy( function() {
                         gotAchievementClass();
                     },
                     error: function( response, status, error ) {
-                        $( '#main' ).toggleLoading();
+                        $( '#main' ).spin( false );
                         console.log( error );
                     }
                 });
@@ -431,7 +431,7 @@ var app = Sammy( function() {
                     gotContext();
                 },
                 error: function( response, status, error ) {
-                    $( '#main' ).toggleLoading();
+                    $( '#main' ).spin( false );
                     console.log( error );
                 }
             });
@@ -468,7 +468,7 @@ function HandleAuthentication( resource, form )
     var email = $(form).find( "input[type=text][name=email]" ).val();
     var password = $(form).find( "input[type=password][name=password]" ).val();
 
-    $(form).toggleLoading();
+    $(form).spin( 'small' );
     
     $.ajax({
         url: apiServer + '/api/1.0/' + resource,
@@ -491,7 +491,7 @@ function HandleAuthentication( resource, form )
             }
             $('.authenticated').show();
             $('.unauthenticated').hide();
-            $(form).toggleLoading();
+            $(form).spin( false );
             
             var queryParams = QueryParameters();
             if ( queryParams.after )
@@ -511,7 +511,7 @@ function HandleAuthentication( resource, form )
                 $(form).find( "input[type=password][name=password]" ).addClass( 'error' );
             }
             
-            $(form).toggleLoading();
+            $(form).spin( false );
             console.log( error );
         }
     });    
@@ -586,7 +586,7 @@ $('.update-account-button').live( 'click', function( event ) {
     for ( var key in toBeUpdated )
     {
         $(button).button( 'loading' );
-        $(form).toggleLoading();
+        $(form).spin( 'medium' );
 
         $.ajax({
             url: apiServer + '/api/1.0/User',
@@ -597,14 +597,14 @@ $('.update-account-button').live( 'click', function( event ) {
             success: function( data ) {
                 currentUser = data;
                 $(form).find( '#password' ).val( '' );
-                $(form).toggleLoading();
+                $(form).spin( false );
                 $(button).button( 'complete' );
                 setTimeout( function() {
                     $(button).button( 'reset' );
                 }, 2000 );
             },
             error: function( response, status, error ) {
-                $(form).toggleLoading();
+                $(form).spin( false );
                 console.log( error );
                 $(button).button( 'reset' );
             }
@@ -631,7 +631,7 @@ $('.button-create-context').live( 'click', function( event ) {
     event.preventDefault();
     var form = $(this).parents( 'form:first' );
 
-    $(form).toggleLoading();
+    $(form).spin( 'medium' );
 
     var name = $(form).find( '#name' ).val();
     var url = $(form).find( '#url' ).val();
@@ -649,14 +649,14 @@ $('.button-create-context').live( 'click', function( event ) {
         contentType: 'application/json',
         cache: false,
         success: function( context ) {
-            $(form).toggleLoading();
+            $(form).spin( false );
             
             g_ContextCache[ context._id ] = context;
             
             app.setLocation( '#/ManageContext/' + context._id );
         },
         error: function( response, status, error ) {
-            $(form).toggleLoading();
+            $(form).spin( false );
             console.log( error );
         }
     });
@@ -684,7 +684,7 @@ $('.update-context-button').live( 'click', function( event ) {
         var file = imageFileInput[ 0 ].files[ 0 ];
         if ( file && file.fileName )
         {
-            $( '#context-image' ).toggleLoading();
+            $( '#context-image' ).spin( 'medium' );
             
             var formData = new FormData();
             formData.append( 'contextImage', file );
@@ -699,11 +699,11 @@ $('.update-context-button').live( 'click', function( event ) {
                 success: function( updatedContext ) {
                     g_ContextCache[ contextId ] = updatedContext;
                     $( '#context-image' ).attr( 'src', updatedContext.image );
-                    $( '#context-image' ).toggleLoading();
+                    $( '#context-image' ).spin( false );
                 },
                 error: function( xhr ) {
                     console.log( "error updating image" );
-                    $( '#context-image' ).toggleLoading();
+                    $( '#context-image' ).spin( false );
                 }
             });
         }
@@ -731,7 +731,7 @@ $('.update-context-button').live( 'click', function( event ) {
     for ( var key in toBeUpdated )
     {
         $(button).button( 'loading' );
-        $(form).toggleLoading();
+        $(form).spin( 'medium' );
 
         $.ajax({
             url: apiServer + '/api/1.0/Context/' + contextId,
@@ -741,14 +741,14 @@ $('.update-context-button').live( 'click', function( event ) {
             contentType: 'application/json',
             success: function( context ) {
                 g_ContextCache[ context._id ] = context;
-                $(form).toggleLoading();
+                $(form).spin( false );
                 $(button).button( 'complete' );
                 setTimeout( function() {
                     $(button).button( 'reset' );
                 }, 2000 );
             },
             error: function( response, status, error ) {
-                $(form).toggleLoading();
+                $(form).spin( false );
                 console.log( error );
                 $(button).button( 'reset' );
             }
@@ -756,6 +756,39 @@ $('.update-context-button').live( 'click', function( event ) {
 
         break; // we break, no matter what, because we just wanted to see if there was a key in toBeUpdated
     }
+});
+
+$('.reset-apikey-button').live( 'click', function( event ) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    var button = this;
+    var form = $(this).parents( 'form:first' );
+    var contextId = $(form).find( '#id' ).val();
+
+    $.ajax({
+        url: apiServer + '/api/1.0/Context/' + contextId + '/ResetAPIKey',
+        type: 'POST',
+        data: '',
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function( context ) {
+            g_ContextCache[ context._id ] = context;
+            for ( var key in context )
+            {
+                $(form).find( '#' + key ).val( context[ key ] );
+                $(form).find( '#' + key ).html( context[ key ] );
+            }
+            $(button).button( 'complete' );
+            setTimeout( function() {
+                $(button).button( 'reset' );
+            }, 2000 );
+        },
+        error: function( response, status, error ) {
+            console.log( error );
+            $(button).button( 'reset' );
+        }
+    });
 });
 
 $('.reset-context-button').live( 'click', function( event ) {
@@ -784,7 +817,7 @@ $('.button-create-achievementclass').live( 'click', function( event ) {
     event.preventDefault();
     var form = $(this).parents( 'form:first' );
 
-    $(form).toggleLoading();
+    $(form).spin( 'medium' );
 
     var contextId = $(form).find( '#contextId' ).val();
     var name = $(form).find( '#name' ).val();
@@ -801,7 +834,7 @@ $('.button-create-achievementclass').live( 'click', function( event ) {
         contentType: 'application/json',
         cache: false,
         success: function( achievementClass ) {
-            $(form).toggleLoading();
+            $(form).spin( false );
             
             g_AchievementClassCache[ achievementClass._id ] = achievementClass;
             g_AchievementClassListCache[ contextId ].push( achievementClass );
@@ -809,7 +842,7 @@ $('.button-create-achievementclass').live( 'click', function( event ) {
             app.setLocation( '#/Context/' + contextId + '/ManageAchievementClass/' + achievementClass._id );
         },
         error: function( response, status, error ) {
-            $(form).toggleLoading();
+            $(form).spin( false );
             console.log( error );
         }
     });
@@ -832,7 +865,7 @@ $('.update-achievementclass-button').live( 'click', function( event ) {
         var file = imageFileInput[ 0 ].files[ 0 ];
         if ( file && file.fileName )
         {
-            $( '#achievementclass-image' ).toggleLoading();
+            $( '#achievementclass-image' ).spin( 'medium' );
             
             var formData = new FormData();
             formData.append( 'achievementClassImage', file );
@@ -847,11 +880,11 @@ $('.update-achievementclass-button').live( 'click', function( event ) {
                 success: function( updatedAchievementClass ) {
                     g_AchievementClassCache[ achievementClassId ] = updatedAchievementClass;
                     $( '#achievementclass-image' ).attr( 'src', updatedAchievementClass.image );
-                    $( '#achievementclass-image' ).toggleLoading();
+                    $( '#achievementclass-image' ).spin( false );
                 },
                 error: function( xhr ) {
                     console.log( "error updating image" );
-                    $( '#achievementclass-image' ).toggleLoading();
+                    $( '#achievementclass-image' ).spin( false );
                 }
             });
         }
@@ -873,7 +906,7 @@ $('.update-achievementclass-button').live( 'click', function( event ) {
     for ( var key in toBeUpdated )
     {
         $(button).button( 'loading' );
-        $(form).toggleLoading();
+        $(form).spin( 'medium' );
 
         $.ajax({
             url: apiServer + '/api/1.0/Context/' + contextId + '/AchievementClass/' + achievementClassId,
@@ -883,14 +916,14 @@ $('.update-achievementclass-button').live( 'click', function( event ) {
             contentType: 'application/json',
             success: function( achievementClass ) {
                 g_AchievementClassCache[ achievementClass._id ] = achievementClass;
-                $(form).toggleLoading();
+                $(form).spin( false );
                 $(button).button( 'complete' );
                 setTimeout( function() {
                     $(button).button( 'reset' );
                 }, 2000 );
             },
             error: function( response, status, error ) {
-                $(form).toggleLoading();
+                $(form).spin( false );
                 console.log( error );
                 $(button).button( 'reset' );
             }
@@ -942,7 +975,7 @@ $('.add-context-owner-button').live( 'click', function( event ) {
                 $(button).button( 'reset' );
             }, 2000 );            
 
-            $( '#ownerlist' ).toggleLoading();
+            $( '#ownerlist' ).spin( 'medium' );
             renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
                 $.ajax({
                     url: apiServer + '/api/1.0/Users',
@@ -955,10 +988,10 @@ $('.add-context-owner-button').live( 'click', function( event ) {
                         {
                             $( '#' + owners[ index ].hash + '-nickname' ).html( owners[ index ].nickname );
                         }
-                        $( '#ownerlist' ).toggleLoading(); 
+                        $( '#ownerlist' ).spin( false ); 
                     },
                     error: function( response, status, error ) {
-                        $( '#ownerlist' ).toggleLoading();
+                        $( '#ownerlist' ).spin( false );
                         console.log( error );
                     }
                 });
@@ -982,7 +1015,7 @@ $('.remove-context-owner-link').live( 'click', function( event ) {
         success: function( context ) {
             g_ContextCache[ context._id ] = context;
             
-            $( '#ownerlist' ).toggleLoading();
+            $( '#ownerlist' ).spin( 'medium' );
             renderTemplate( '#ownerlist', '/templates/ownerlist.mustache', { 'owners': context.owners, 'context': context }, function() {
                 $.ajax({
                     url: apiServer + '/api/1.0/Users',
@@ -995,10 +1028,10 @@ $('.remove-context-owner-link').live( 'click', function( event ) {
                         {
                             $( '#' + owners[ index ].hash + '-nickname' ).html( owners[ index ].nickname );
                         }
-                        $( '#ownerlist' ).toggleLoading(); 
+                        $( '#ownerlist' ).spin( false ); 
                     },
                     error: function( response, status, error ) {
-                        $( '#ownerlist' ).toggleLoading();
+                        $( '#ownerlist' ).spin( false );
                         console.log( error );
                     }
                 });

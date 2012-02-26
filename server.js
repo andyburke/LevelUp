@@ -14,8 +14,6 @@ var mongoStore = require( 'connect-mongodb' );
 
 var sessionSecret = process.env[ 'LEVELUP_SECRET' ] != null ? sha1( process.env[ 'LEVELUP_SECRET' ] ) : sha1( __dirname + __filename + process.env[ 'USER' ] );
 
-console.log( sessionSecret );
-
 var app = express.createServer(
     express.static( __dirname + '/site' ),
     express.bodyParser(),
@@ -40,4 +38,6 @@ for ( var moduleIndex = 0; moduleIndex < apiModules.length; ++moduleIndex )
     apiModules[ moduleIndex ].bindToApp( app );
 }
 
-app.listen( process.env.LEVELUP_PORT || 8000 );
+var port = process.env.LEVELUP_PORT || 8000;
+console.log( "Listening on port " + port );
+app.listen( port );

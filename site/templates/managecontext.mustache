@@ -18,6 +18,16 @@
                     </div>
                 </div><!-- /clearfix -->
                 <div class="control-group">
+                    <label class="form-label">API Secret</label>
+                    <div class="controls">
+                        <input class="input-xlarge disabled" id="apiKey" name="apiKey" type="text" value="{{apiKey}}" disabled />
+                        <div class="help-block">
+                            This is the secret you can use to access the API to grant achievements.
+                        </div>
+                        <button class="btn btn-primary reset-apikey-button" data-loading-text="Resetting..." data-complete-text="Reset!">Reset API Key</button>
+                    </div>
+                </div><!-- /clearfix -->
+                <div class="control-group">
                     <label for="name">Name</label>
                     <div class="controls">
                         <input class="input-xlarge" id="name" name="name" type="text" value="{{name}}" />
