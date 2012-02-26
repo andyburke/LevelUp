@@ -769,7 +769,7 @@ $('.reset-apikey-button').live( 'click', function( event ) {
     $.ajax({
         url: apiServer + '/api/1.0/Context/' + contextId + '/ResetAPIKey',
         type: 'POST',
-        data: '',
+        data: '{}',
         dataType: 'json',
         contentType: 'application/json',
         success: function( context ) {
